@@ -21,7 +21,7 @@ import SignUp from "./SignUp"
 const AuthPage = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   return (
-    <Container maxW="2xl">
+    <Container maxW="xl">
       <Flex justify="right">
         <Tooltip label="Toggle color mode" hasArrow placement="bottom-end">
           <Button mt="5" onClick={toggleColorMode}>

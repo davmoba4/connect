@@ -1,0 +1,7 @@
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@300&family=Work+Sans:wght@300&display=swap");
+
+.App{
+  font-family: Nunito;
+  min-height: 100vh;
+  display: flex;
+}

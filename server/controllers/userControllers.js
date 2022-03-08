@@ -1,5 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const generateJWT = require("../config/generateJWT");
+const Setting = require("../models/settingModel");
 const User = require("../models/userModel");
 
 const signUp = asyncHandler(async (req, res) => {
@@ -24,12 +25,22 @@ const signUp = asyncHandler(async (req, res) => {
   });
 
   if (user) {
-    res.status(201).json({
-      _id: user._id,
-      username: user.username,
-      picture: user.pic,
-      token: generateJWT(user._id),
+    const setting = await Setting.create({
+      user: user._id,
     });
+
+    if (setting) {
+      res.status(201).json({
+        _id: user._id,
+        username: user.username,
+        picture: user.pic,
+        token: generateJWT(user._id),
+      });
+    } else {
+      await User.deleteOne({ username: user.username });
+      res.status(400);
+      throw new Error("Failed to create settings for user");
+    }
   } else {
     res.status(400);
     throw new Error("Failed to create user");
@@ -48,8 +59,7 @@ const logIn = asyncHandler(async (req, res) => {
       picture: user.pic,
       token: generateJWT(user._id),
     });
-  }
-  else {
+  } else {
     res.status(401);
     throw new Error("Invalid username or password");
   }

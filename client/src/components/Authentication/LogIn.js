@@ -14,8 +14,8 @@ import { ViewOffIcon, ViewIcon } from "@chakra-ui/icons";
 
 const LogIn = () => {
   const { colorMode } = useColorMode();
-  const [username, setUsername] = useState();
-  const [password, setPassword] = useState();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [loadingLogIn, setLoadingLogIn] = useState(false);
   const [loadingGuest, setLoadingGuest] = useState(false);
@@ -24,13 +24,19 @@ const LogIn = () => {
     setShowPassword(!showPassword);
   };
 
+  const logInByEnter = (event) => {
+    if (event.key === "Enter") {
+      handleLogIn();
+    }
+  };
+
   const handleLogIn = () => {};
 
   const handleGuest = () => {};
 
   return (
     <VStack spacing="5">
-      <FormControl id="username" isRequired>
+      <FormControl id="username" isRequired onKeyDown={logInByEnter}>
         <FormLabel>Username</FormLabel>
         <Input
           value={username}
@@ -39,7 +45,7 @@ const LogIn = () => {
           backgroundColor={colorMode === "dark" ? null : "#FFFBE9"}
         />
       </FormControl>
-      <FormControl id="password" isRequired>
+      <FormControl id="password" isRequired onKeyDown={logInByEnter}>
         <FormLabel>Password</FormLabel>
         <InputGroup>
           <Input

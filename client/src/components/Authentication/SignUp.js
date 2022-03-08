@@ -14,9 +14,9 @@ import React, { useState } from "react";
 
 const SignUp = () => {
   const { colorMode } = useColorMode();
-  const [username, setUsername] = useState();
-  const [password, setPassword] = useState();
-  const [passwordConfirm, setPasswordConfirm] = useState();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [picture, setPicture] = useState();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);

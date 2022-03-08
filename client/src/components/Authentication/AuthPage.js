@@ -69,10 +69,10 @@ const AuthPage = () => {
           </TabList>
           <TabPanels>
             <TabPanel>
-              <LogIn colorMode={colorMode} />
+              <LogIn/>
             </TabPanel>
             <TabPanel>
-              <SignUp colorMode={colorMode}/>
+              <SignUp/>
             </TabPanel>
           </TabPanels>
         </Tabs>

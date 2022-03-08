@@ -7,11 +7,13 @@ import {
   InputGroup,
   InputRightElement,
   Tooltip,
+  useColorMode,
   VStack,
 } from "@chakra-ui/react";
 import { ViewOffIcon, ViewIcon } from "@chakra-ui/icons";
 
-const LogIn = ({ colorMode }) => {
+const LogIn = () => {
+  const { colorMode } = useColorMode();
   const [username, setUsername] = useState();
   const [password, setPassword] = useState();
   const [showPassword, setShowPassword] = useState(false);
@@ -28,7 +30,7 @@ const LogIn = ({ colorMode }) => {
 
   return (
     <VStack spacing="5">
-      <FormControl id="username">
+      <FormControl id="username" isRequired>
         <FormLabel>Username</FormLabel>
         <Input
           value={username}
@@ -37,7 +39,7 @@ const LogIn = ({ colorMode }) => {
           backgroundColor={colorMode === "dark" ? null : "#FFFBE9"}
         />
       </FormControl>
-      <FormControl id="password">
+      <FormControl id="password" isRequired>
         <FormLabel>Password</FormLabel>
         <InputGroup>
           <Input

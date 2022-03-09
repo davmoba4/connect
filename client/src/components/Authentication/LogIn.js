@@ -8,12 +8,18 @@ import {
   InputRightElement,
   Tooltip,
   useColorMode,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import { ViewOffIcon, ViewIcon } from "@chakra-ui/icons";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const LogIn = () => {
   const { colorMode } = useColorMode();
+  const toast = useToast();
+  const navigate = useNavigate();
+
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -30,9 +36,56 @@ const LogIn = () => {
     }
   };
 
-  const handleLogIn = () => {};
+  const handleLogIn = async () => {
+    setLoadingLogIn(true);
+    if (!username || !password) {
+      toast({
+        title: "Please fill all the fields",
+        status: "warning",
+        position: "bottom",
+        duration: 10000,
+        isClosable: true,
+      });
+      setLoadingLogIn(false);
+      return;
+    }
 
-  const handleGuest = () => {};
+    try {
+      const { config } = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      const { data } = await axios.post(
+        "/api/user/log-in",
+        { username, password },
+        config
+      );
+      toast({
+        title: "Logged in successfully!",
+        status: "success",
+        position: "bottom",
+        duration: 10000,
+        isClosable: true,
+      });
+
+      localStorage.setItem("connect-user-data", JSON.stringify(data));
+      setLoadingLogIn(false);
+      navigate("/chats");
+    } catch (error) {
+      toast({
+        title: "Error occured!",
+        description: error.response.data.message,
+        status: "error",
+        position: "bottom",
+        duration: 10000,
+        isClosable: true,
+      });
+      setLoadingLogIn(false);
+    }
+  };
+
+  const handleGuest = async () => {};
 
   return (
     <VStack spacing="5">

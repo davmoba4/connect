@@ -14,6 +14,12 @@ import {
 import { ViewOffIcon, ViewIcon } from "@chakra-ui/icons";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import {
+  uniqueNamesGenerator,
+  adjectives,
+  animals,
+  names,
+} from "unique-names-generator";
 
 const LogIn = () => {
   const { colorMode } = useColorMode();
@@ -85,7 +91,83 @@ const LogIn = () => {
     }
   };
 
-  const handleGuest = async () => {};
+  const generateGuestUsername = () => {
+    return uniqueNamesGenerator({
+      dictionaries: [adjectives, animals, names],
+      separator: "",
+      style: "capital",
+    });
+  };
+
+  const generateGuestPassword = (length) => {
+    const CHARACTERS =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
+    var password = "";
+    for (var i = 0; i < length; i++) {
+      password += CHARACTERS.charAt(
+        Math.floor(Math.random() * CHARACTERS.length)
+      );
+    }
+    return password;
+  };
+
+  const generateGuestPicture = () => {
+    const BASE_URL = "https://res.cloudinary.com/disclcylm/image/upload/";
+    const URLS = [
+      "v1646438876/guest_x2r4pw.png",
+      "v1646438836/guest_ic2xwy.png",
+      "v1646438803/guest_d4khep.png",
+      "v1646438751/guest_tlo7es.png",
+      "v1646438715/guest_u8csu3.png",
+      "v1646438674/guest_q6i3uv.png",
+      "v1646438560/guest_tq3wv6.png",
+      "v1646438488/guest_hcjlhr.png",
+      "v1646438314/guest_m1tp9q.png",
+    ];
+    return `${BASE_URL}${URLS[Math.floor(Math.random() * URLS.length)]}`;
+  };
+
+  const handleGuest = async () => {
+    setLoadingGuest(true);
+
+    const uname = generateGuestUsername();
+    const pass = generateGuestPassword(12);
+    const pic = generateGuestPicture();
+
+    try {
+      const { config } = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      const { data } = await axios.post(
+        "/api/user/sign-up",
+        { username: uname, password: pass, picture: pic },
+        config
+      );
+      toast({
+        title: "Guest account created!",
+        status: "success",
+        position: "bottom",
+        duration: 10000,
+        isClosable: true,
+      });
+
+      localStorage.setItem("connect-user-data", JSON.stringify(data));
+      setLoadingGuest(false);
+      navigate("/chats");
+    } catch (error) {
+      toast({
+        title: "Error occured!",
+        description: error.response.data.message,
+        status: "error",
+        position: "bottom",
+        duration: 10000,
+        isClosable: true,
+      });
+      setLoadingGuest(false);
+    }
+  };
 
   return (
     <VStack spacing="5">

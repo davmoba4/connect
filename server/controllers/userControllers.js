@@ -65,4 +65,19 @@ const logIn = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { signUp, logIn };
+const search = asyncHandler(async (req, res) => {
+  const user = await User.findOne({ username: req.query.search });
+
+  if (user) {
+    if (user._id.toString() === req.user._id.toString()) {
+      res.status(400);
+      throw new Error("Self-chat is not supported");
+    }
+    res.status(200).json({ _id: user._id });
+  } else {
+    res.status(400);
+    throw new Error("User does not exist");
+  }
+});
+
+module.exports = { signUp, logIn, search };

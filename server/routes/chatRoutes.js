@@ -1,7 +1,8 @@
 const express = require("express");
 const {
-  create,
+  createOneOnOne,
   createGroup,
+  changeGroupAdmin,
   renameGroup,
   removeFromGroup,
   addToGroup,
@@ -11,8 +12,9 @@ const { JWTAuth } = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.post("/create", JWTAuth, create);
+router.post("/create-one-on-one", JWTAuth, createOneOnOne);
 router.post("/create-group", JWTAuth, createGroup);
+router.put("/change-group-admin", JWTAuth, changeGroupAdmin);
 router.put("/rename-group", JWTAuth, renameGroup);
 router.put("/remove-from-group", JWTAuth, removeFromGroup);
 router.put("/add-to-group", JWTAuth, addToGroup);

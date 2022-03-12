@@ -4,7 +4,7 @@ const Setting = require("../models/settingModel");
 const User = require("../models/userModel");
 
 const signUp = asyncHandler(async (req, res) => {
-  const { username, password, picture } = req.body;
+  const { username, password, picture, darkModeSetting } = req.body;
 
   if (!username || !password) {
     res.status(400);
@@ -27,6 +27,7 @@ const signUp = asyncHandler(async (req, res) => {
   if (user) {
     const setting = await Setting.create({
       user: user._id,
+      darkMode: darkModeSetting,
     });
 
     if (setting) {

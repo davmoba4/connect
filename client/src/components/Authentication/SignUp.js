@@ -113,9 +113,10 @@ const SignUp = () => {
           "Content-type": "application/json",
         },
       };
+      const darkModeSetting = colorMode === "dark";
       const { data } = await axios.post(
         "/api/user/sign-up",
-        { username, password, picture },
+        { username, password, picture, darkModeSetting },
         config
       );
       toast({

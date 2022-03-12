@@ -66,6 +66,7 @@ const SignUp = () => {
             duration: 10000,
             isClosable: true,
           });
+          setLoading(false);
         });
     } else {
       toast({
@@ -75,8 +76,8 @@ const SignUp = () => {
         duration: 10000,
         isClosable: true,
       });
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleSignUp = async () => {

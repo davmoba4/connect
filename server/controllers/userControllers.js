@@ -73,7 +73,7 @@ const search = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error("Self-chat is not supported");
     }
-    res.status(200).json({ _id: user._id });
+    res.status(200).json(user._id);
   } else {
     res.status(400);
     throw new Error("User does not exist");

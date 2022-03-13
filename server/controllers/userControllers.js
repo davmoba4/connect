@@ -3,6 +3,9 @@ const generateJWT = require("../config/generateJWT");
 const Setting = require("../models/settingModel");
 const User = require("../models/userModel");
 
+//@description     Sign up for an account
+//@route           POST /api/user/sign-up
+//@access          Public
 const signUp = asyncHandler(async (req, res) => {
   const { username, password, picture, darkModeSetting } = req.body;
 
@@ -48,6 +51,9 @@ const signUp = asyncHandler(async (req, res) => {
   }
 });
 
+//@description     Log into your account
+//@route           POST /api/user/log-in
+//@access          Public
 const logIn = asyncHandler(async (req, res) => {
   const { username, password } = req.body;
 
@@ -66,6 +72,9 @@ const logIn = asyncHandler(async (req, res) => {
   }
 });
 
+//@description     Search for a user
+//@route           GET /api/user?search=<username>
+//@access          Protected
 const search = asyncHandler(async (req, res) => {
   const user = await User.findOne({ username: req.query.search });
 

@@ -58,6 +58,7 @@ const AuthPage = () => {
             maxHeight: "50px",
             margin: "10px 10px 0 0",
           }}
+          alt="logo"
         />
         <Text fontSize="5xl">connect</Text>
       </Flex>

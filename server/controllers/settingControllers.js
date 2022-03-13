@@ -1,6 +1,9 @@
 const asyncHandler = require("express-async-handler");
 const Setting = require("../models/settingModel");
 
+//@description     Get the dark mode setting information for yourself
+//@route           GET /api/setting
+//@access          Protected
 const getDarkModeSetting = asyncHandler(async (req, res) => {
   const setting = await Setting.findOne({ user: req.user._id });
   if (setting) {
@@ -11,6 +14,9 @@ const getDarkModeSetting = asyncHandler(async (req, res) => {
   }
 });
 
+//@description     Update the dark mode setting for yourself
+//@route           PUT /api/setting
+//@access          Protected
 const setDarkModeSetting = asyncHandler(async (req, res) => {
   const { settingId, newDarkModeSetting } = req.body;
 

@@ -1,8 +1,11 @@
 const asyncHandler = require("express-async-handler");
 const Chat = require("../models/chatModel");
 const User = require("../models/userModel");
-const Message = require("../models/messageModel")
+const Message = require("../models/messageModel");
 
+//@description     Create a one on one chat
+//@route           POST /api/chat/create-one-on-one
+//@access          Protected
 const createOneOnOne = asyncHandler(async (req, res) => {
   const { userId } = req.body;
 
@@ -39,6 +42,9 @@ const createOneOnOne = asyncHandler(async (req, res) => {
   }
 });
 
+//@description     Create a group chat (you'll be the admin)
+//@route           POST /api/chat/create-group
+//@access          Protected
 const createGroup = asyncHandler(async (req, res) => {
   if (!req.body.users || !req.body.chatName) {
     res.status(400);
@@ -68,6 +74,9 @@ const createGroup = asyncHandler(async (req, res) => {
   }
 });
 
+//@description     Find the group admin for a chat
+//@route           GET /api/chat/find-group-admin
+//@access          Protected
 const findGroupAdmin = asyncHandler(async (req, res) => {
   const chat = await Chat.findOne({ _id: req.body.chatId });
 
@@ -79,6 +88,9 @@ const findGroupAdmin = asyncHandler(async (req, res) => {
   }
 });
 
+//@description     Change the group admin for a chat (you are the admin)
+//@route           PUT /api/chat/change-group-admin
+//@access          Protected
 const changeGroupAdmin = asyncHandler(async (req, res) => {
   const { chatId, newAdminId } = req.body;
 
@@ -105,6 +117,9 @@ const changeGroupAdmin = asyncHandler(async (req, res) => {
   }
 });
 
+//@description     Rename a group chat
+//@route           PUT /api/chat/rename-group
+//@access          Protected
 const renameGroup = asyncHandler(async (req, res) => {
   const { chatId, newChatName } = req.body;
 
@@ -124,12 +139,18 @@ const renameGroup = asyncHandler(async (req, res) => {
   }
 });
 
+//@description     Remove a user from a group chat (you are the admin if it's not yourself you're removing)
+//@route           PUT /api/chat/remove-from-group
+//@access          Protected
 const removeFromGroup = asyncHandler(async (req, res) => {
   const { chatId, userId } = req.body;
 
   const chat = await Chat.findOne({ _id: chatId });
 
-  if (chat?.groupAdmin.toString() !== req.user._id.toString()) {
+  if (
+    userId !== req.user._id &&
+    chat?.groupAdmin.toString() !== req.user._id.toString()
+  ) {
     res.status(400);
     throw new Error("Only the group admin can remove someone from the group");
   }
@@ -150,6 +171,9 @@ const removeFromGroup = asyncHandler(async (req, res) => {
   }
 });
 
+//@description     Add a user to a group chat (you are the admin)
+//@route           PUT /api/chat/add-to-group
+//@access          Protected
 const addToGroup = asyncHandler(async (req, res) => {
   const { chatId, userId } = req.body;
 
@@ -176,10 +200,13 @@ const addToGroup = asyncHandler(async (req, res) => {
   }
 });
 
+//@description     Fetch all chats of yourself
+//@route           GET /api/chat/fetch-all
+//@access          Protected
 const fetchAll = asyncHandler(async (req, res) => {
   try {
     Chat.find({ users: { $elemMatch: { $eq: req.user._id } } })
-    .populate("groupAdmin", "-password")
+      .populate("groupAdmin", "-password")
       .populate("users", "-password")
       .populate("newestMessage")
       .sort({ updatedAt: -1 })
@@ -187,7 +214,7 @@ const fetchAll = asyncHandler(async (req, res) => {
         results = await User.populate(results, {
           path: "newestMessage.sender",
           select: "username picture",
-        })
+        });
         results = await User.populate(results, {
           path: "newestMessage.readBy",
           select: "username picture",

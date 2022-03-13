@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Avatar,
-  Box,
   Button,
   Flex,
   Menu,
@@ -13,16 +12,60 @@ import {
   Tooltip,
   useColorMode,
 } from "@chakra-ui/react";
-import { ChevronDownIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { BellIcon, ChevronDownIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import logo from "../../assets/logo.png";
 import { ChatState } from "../../context/ChatProvider";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import ProfileModal from "../Miscellaneous/ProfileModal";
 
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const navigate = useNavigate();
 
   const { user } = ChatState();
+
+  useEffect(() => {
+    async function fetchColorMode() {
+      try {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        const { data } = await axios.get("/api/setting", config);
+
+        if (data?.darkMode && colorMode !== "dark") {
+          toggleColorMode();
+        } else if (!data?.darkMode && colorMode === "dark") {
+          toggleColorMode();
+        }
+      } catch (error) {
+        return;
+      }
+    }
+    fetchColorMode();
+  }, []);
+
+  const hardToggleColorMode = async () => {
+    toggleColorMode();
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.get("/api/setting", config);
+
+      await axios.put(
+        "/api/setting",
+        { settingId: data._id, newDarkModeSetting: colorMode !== "dark" },
+        config
+      );
+    } catch (error) {
+      return;
+    }
+  };
 
   const handleLogOut = () => {
     localStorage.removeItem("connect-user-data");
@@ -32,7 +75,7 @@ const Navbar = () => {
   return (
     <Flex
       justifyContent="space-between"
-      alightItems="center"
+      alignItems="center"
       w="100%"
       p="5px 10px 5px 10px"
       borderWidth="2px"
@@ -46,43 +89,55 @@ const Navbar = () => {
             maxHeight: "40px",
             margin: "6px 6px 0 0",
           }}
+          alt="logo"
         />
         <Text fontSize="4xl">connect</Text>
       </Flex>
 
       <div>
+        <Menu>
+          <MenuButton
+            p={1}
+            bg={
+              colorMode === "dark"
+                ? "var(--chakra-colors-whiteAlpha-200)"
+                : "#FBF8F1"
+            }
+            borderRadius="5"
+          >
+            <BellIcon fontSize="2xl" m={1} />
+          </MenuButton>
+          {/* <MenuList></MenuList> */}
+        </Menu>
+
         <Tooltip label="Toggle color mode" hasArrow placement="bottom-end">
           <Button
-            mt="2"
-            onClick={toggleColorMode}
+            ml="2"
+            onClick={hardToggleColorMode}
             bg={colorMode === "dark" ? null : "#FBF8F1"}
           >
             {colorMode === "dark" ? <MoonIcon /> : <SunIcon />}
           </Button>
         </Tooltip>
+
         <Menu>
           <MenuButton
             as={Button}
-            mt="2"
-            ml="1"
+            ml="2"
             bg={colorMode === "dark" ? null : "#FBF8F1"}
             rightIcon={<ChevronDownIcon />}
           >
-            <Flex>
-              <Avatar
-                size="sm"
-                cursor="pointer"
-                name={user.username}
-                src={user.picture}
-              />
-              <Text mt="2" ml="1">
-                {user.username}
-              </Text>
-            </Flex>
+            <Avatar
+              size="sm"
+              cursor="pointer"
+              name={user.username}
+              src={user.picture}
+            />
           </MenuButton>
           <MenuList>
-            {/* <ProfileModal user={user}> */}
-            <MenuItem>My Profile</MenuItem> {/* </ProfileModal> */}
+            <ProfileModal user={user}>
+              <MenuItem>My Profile</MenuItem>{" "}
+            </ProfileModal>
             <MenuDivider />
             <MenuItem onClick={handleLogOut}>Log Out</MenuItem>
           </MenuList>

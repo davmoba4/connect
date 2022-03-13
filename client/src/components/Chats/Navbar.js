@@ -30,8 +30,7 @@ const Navbar = () => {
   };
 
   return (
-    <Box
-      d="flex"
+    <Flex
       justifyContent="space-between"
       alightItems="center"
       w="100%"
@@ -45,7 +44,7 @@ const Navbar = () => {
           style={{
             maxWidth: "66px",
             maxHeight: "40px",
-            margin: "10px 10px 0 0",
+            margin: "6px 6px 0 0",
           }}
         />
         <Text fontSize="4xl">connect</Text>
@@ -89,7 +88,7 @@ const Navbar = () => {
           </MenuList>
         </Menu>
       </div>
-    </Box>
+    </Flex>
   );
 };
 

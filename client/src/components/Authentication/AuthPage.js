@@ -13,13 +13,24 @@ import {
   useColorMode,
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import React from "react";
+import React, { useEffect } from "react";
 import logo from "../../assets/logo.png"
 import LogIn from "./LogIn"
 import SignUp from "./SignUp"
+import { useNavigate } from "react-router-dom";
 
 const AuthPage = () => {
   const { colorMode, toggleColorMode } = useColorMode();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const userData = JSON.parse(localStorage.getItem("connect-user-data"));
+
+    if (userData) {
+      navigate("/chats");
+    }
+  }, [navigate]);
+
   return (
     <Container maxW="xl">
       <Flex justify="right">

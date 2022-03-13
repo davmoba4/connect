@@ -34,7 +34,7 @@ const signUp = asyncHandler(async (req, res) => {
       res.status(201).json({
         _id: user._id,
         username: user.username,
-        picture: user.pic,
+        picture: user.picture,
         token: generateJWT(user._id),
       });
     } else {
@@ -57,7 +57,7 @@ const logIn = asyncHandler(async (req, res) => {
     res.status(200).json({
       _id: user._id,
       username: user.username,
-      picture: user.pic,
+      picture: user.picture,
       token: generateJWT(user._id),
     });
   } else {

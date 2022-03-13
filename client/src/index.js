@@ -5,15 +5,16 @@ import { ChakraProvider } from "@chakra-ui/react";
 import { BrowserRouter } from "react-router-dom";
 import { ColorModeScript } from "@chakra-ui/react";
 import theme from "./theme";
+import ChatProvider from "./context/ChatProvider";
 
 ReactDOM.render(
-  <React.StrictMode>
     <ChakraProvider theme={theme}>
       <BrowserRouter>
-        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
-        <App />
+        <ChatProvider>
+          <ColorModeScript initialColorMode={theme.config.initialColorMode} />
+          <App />
+        </ChatProvider>
       </BrowserRouter>
-    </ChakraProvider>
-  </React.StrictMode>,
+    </ChakraProvider>,
   document.getElementById("root")
 );

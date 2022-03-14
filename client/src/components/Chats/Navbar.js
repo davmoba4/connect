@@ -136,7 +136,7 @@ const Navbar = () => {
           </MenuButton>
           <MenuList>
             <ProfileModal user={user}>
-              <MenuItem>My Profile</MenuItem>{" "}
+              <MenuItem>My Profile</MenuItem>
             </ProfileModal>
             <MenuDivider />
             <MenuItem onClick={handleLogOut}>Log Out</MenuItem>

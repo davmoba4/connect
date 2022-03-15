@@ -1,4 +1,3 @@
-import { ViewIcon } from "@chakra-ui/icons";
 import {
   Modal,
   ModalOverlay,
@@ -33,17 +32,18 @@ const OneOnOneChatModal = ({ children }) => {
         <ModalOverlay />
         <ModalContent>
           <ModalHeader fontSize="25px" d="flex" justifyContent="center">
-            Create One on One Chat
+            Create a One on One Chat
           </ModalHeader>
           <ModalCloseButton />
           <ModalBody d="flex" flexDir="column" alignItems="center">
             <FormControl
-              id="usernameToChatWith"
+              id="username-one-on-one-chat"
               isRequired
               onKeyDown={createChatByEnter}
             >
               <Input
-                placeholder="Username of user to chat with"
+                value={username}
+                placeholder="Username of user you want to chat with"
                 mt="3"
                 mb="3"
                 onChange={(e) => setUsername(e.target.value)}

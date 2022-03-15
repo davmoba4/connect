@@ -1,14 +1,29 @@
 import { AddIcon } from "@chakra-ui/icons";
-import { Button, Flex, Menu, MenuButton, MenuDivider, MenuItem, MenuList, useColorMode, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
+  Stack,
+  Text,
+  useColorMode,
+  useToast,
+} from "@chakra-ui/react";
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ChatState } from "../../context/ChatProvider";
 import GroupChatModal from "../Miscellaneous/GroupChatModal";
 import OneOnOneChatModal from "../Miscellaneous/OneOnOneChatModal";
+import ChatsLoading from "../Miscellaneous/ChatsLoading";
+import { getSenderUsername } from "../../config/ChatLogic";
 
 const MyChats = () => {
   const { colorMode } = useColorMode();
-  const { selectedChat, setSelectedChat, user, chats, setChats } = ChatState();
+  const { user, chats, setChats, selectedChat, setSelectedChat } = ChatState();
   const [loggedUser, setLoggedUser] = useState();
   const toast = useToast();
 
@@ -33,9 +48,14 @@ const MyChats = () => {
     }
   };
 
+  useEffect(() => {
+    setLoggedUser(JSON.parse(localStorage.getItem("connect-user-data")));
+    fetchChats();
+  }, []);
+
   return (
-    <Flex
-      d={{ base: selectedChat ? "none" : null }}
+    <Box
+      d={{ base: selectedChat ? "none" : "flex", md: "flex" }}
       flexDir="column"
       alignItems="center"
       w={{ base: "100%", md: "31%" }}
@@ -49,18 +69,20 @@ const MyChats = () => {
         alignItems="center"
         w="100%"
         p="3"
-        fontSize={{base: "25px", md: "18px", lg: "27px"}}
-      >My Chats
-      <Menu>
+        fontSize={{ base: "25px", md: "18px", lg: "27px" }}
+      >
+        My Chats
+        <Menu>
           <MenuButton
             as={Button}
             d="flex"
-            fontSize={{base: "15px", md: "10px", lg: "17px"}}
+            fontSize={{ base: "15px", md: "10px", lg: "17px" }}
+            bg={colorMode === "dark" ? null : "#FBF8F1"}
             rightIcon={<AddIcon />}
           >
             New Chat
           </MenuButton>
-          <MenuList fontSize={{base: "15px", md: "10px", lg: "17px"}}>
+          <MenuList fontSize={{ base: "15px", md: "10px", lg: "17px" }}>
             <OneOnOneChatModal>
               <MenuItem>One on One Chat</MenuItem>
             </OneOnOneChatModal>
@@ -71,7 +93,49 @@ const MyChats = () => {
           </MenuList>
         </Menu>
       </Flex>
-    </Flex>
+      <Flex
+        flexDir="column"
+        w="100%"
+        h="100%"
+        p="3"
+        overflowY="hidden"
+        borderRadius="10"
+        bg={colorMode === "dark" ? "#203239" : "#EEEBDD"}
+      >
+        {chats ? (
+          <Stack overflowY="scroll">
+            {chats.map((chat) => (
+              <Box
+                key={chat._id}
+                onClick={() => setSelectedChat(chat)}
+                cursor="pointer"
+                px="3"
+                py="2"
+                color={selectedChat === chat ? "white" : "black"}
+                bg={selectedChat === chat ? "#38B2AC" : "#B4CFB0"}
+                borderRadius="10"
+              >
+                <Text>
+                  {chat.isGroupChat
+                    ? chat.chatName
+                    : getSenderUsername(loggedUser, chat.users)}
+                </Text>
+                {chat.newestMessage && (
+                  <Text fontSize="xs">
+                    <strong>{chat.newestMessage.sender.username} : </strong>
+                    {chat.newestMessage.content.length > 50
+                      ? chat.newestMessage.content.subString(0, 51) + "..."
+                      : chat.newestMessage.content}
+                  </Text>
+                )}
+              </Box>
+            ))}
+          </Stack>
+        ) : (
+          <ChatsLoading />
+        )}
+      </Flex>
+    </Box>
   );
 };
 

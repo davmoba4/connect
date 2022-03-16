@@ -34,6 +34,11 @@ const GroupChatModal = ({ children }) => {
     });
   };
 
+  const addUserByEnter = (event) => {
+    if (event.key === "Enter") {
+      addUser();
+    }
+  };
   const addUser = async () => {
     try {
       const config = {
@@ -151,7 +156,7 @@ const GroupChatModal = ({ children }) => {
                 onChange={(e) => setGroupChatName(e.target.value)}
               />
             </FormControl>
-            <FormControl d="flex" alignItems="center">
+            <FormControl id="username-group-chat" d="flex" alignItems="center" onKeyDown={addUserByEnter}>
               <Input
                 placeholder="Add usernames of others one by one"
                 mb="3"
@@ -172,7 +177,7 @@ const GroupChatModal = ({ children }) => {
             </Flex>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={createGroupChat}>Create Chat</Button>
+            <Button onClick={createGroupChat} colorScheme="blue">Create Chat</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

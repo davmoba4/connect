@@ -102,7 +102,7 @@ const OneOnOneChatModal = ({ children }) => {
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={createChat}>Create Chat</Button>
+            <Button onClick={createChat} colorScheme="blue">Create Chat</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

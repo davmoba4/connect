@@ -19,11 +19,11 @@ import { ChatState } from "../../context/ChatProvider";
 import UserBadge from "./UserBadge";
 
 const GroupChatModal = ({ children }) => {
-  const { user } = ChatState();
+  const { user, chats, setChats } = ChatState();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const [groupChatName, setGroupChatName] = useState();
-  const [username, setUsername] = useState();
+  const [groupChatName, setGroupChatName] = useState("");
+  const [username, setUsername] = useState("");
   const [selectedUsers, setSelectedUsers] = useState([]);
 
   const toast = useToast();
@@ -57,7 +57,7 @@ const GroupChatModal = ({ children }) => {
       setSelectedUsers([...selectedUsers, data]);
     } catch (error) {
       toast({
-        title: "Error occured!",
+        title: "Error occurred!",
         description: error.response.data.message,
         status: "error",
         position: "top",
@@ -73,7 +73,62 @@ const GroupChatModal = ({ children }) => {
     );
   };
 
-  const createGroupChat = async () => {};
+  const createGroupChat = async () => {
+    if (!groupChatName) {
+      toast({
+        title: "Please enter a name for your group chat",
+        status: "warning",
+        position: "top",
+        duration: 10000,
+        isClosable: true,
+      });
+      return;
+    }
+    if (selectedUsers?.length === 0) {
+      toast({
+        title: "Please add users to the group chat",
+        status: "warning",
+        position: "top",
+        duration: 10000,
+        isClosable: true,
+      });
+      return;
+    }
+
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.post(
+        "/api/chat/create-group",
+        {
+          chatName: groupChatName,
+          users: JSON.stringify(selectedUsers.map((u) => u._id)),
+        },
+        config
+      );
+      setChats([data, ...chats]);
+      onClose();
+      toast({
+        title: "New group chat created!",
+        status: "success",
+        position: "top",
+        duration: 10000,
+        isClosable: true,
+      });
+    } catch (error) {
+      toast({
+        title: "Failed to create the chat",
+        description: error.response.data.message,
+        status: "error",
+        position: "top",
+        duration: 10000,
+        isClosable: true,
+      });
+    }
+  };
 
   return (
     <>
@@ -90,7 +145,7 @@ const GroupChatModal = ({ children }) => {
             <FormControl id="name-group-chat" isRequired>
               <Input
                 value={groupChatName}
-                placeholder="Create a chat name"
+                placeholder="Create a group name"
                 mt="3"
                 mb="3"
                 onChange={(e) => setGroupChatName(e.target.value)}

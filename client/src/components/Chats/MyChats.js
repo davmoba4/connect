@@ -23,8 +23,8 @@ import { getSenderUsername } from "../../config/ChatLogic";
 
 const MyChats = () => {
   const { colorMode } = useColorMode();
-  const { user, chats, setChats, selectedChat, setSelectedChat } = ChatState();
-  const [loggedUser, setLoggedUser] = useState();
+  const { user, chats, setChats, selectedChat, setSelectedChat, fetchAgain } = ChatState();
+  const [loggedUser, setLoggedUser] = useState("");
   const toast = useToast();
 
   const fetchChats = async () => {
@@ -38,7 +38,7 @@ const MyChats = () => {
       setChats(data);
     } catch (error) {
       toast({
-        title: "Error occured!",
+        title: "Error occurred!",
         description: "Failed to load the chats",
         status: "error",
         position: "bottom-left",
@@ -51,7 +51,7 @@ const MyChats = () => {
   useEffect(() => {
     setLoggedUser(JSON.parse(localStorage.getItem("connect-user-data")));
     fetchChats();
-  }, []);
+  }, [fetchAgain]);
 
   return (
     <Box

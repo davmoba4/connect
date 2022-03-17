@@ -74,19 +74,15 @@ const createGroup = asyncHandler(async (req, res) => {
   }
 });
 
-//@description     Find the group admin for a chat
-//@route           GET /api/chat/find-group-admin
-//@access          Protected
-const findGroupAdmin = asyncHandler(async (req, res) => {
-  const chat = await Chat.findOne({ _id: req.body.chatId });
-
-  if (chat) {
-    res.status(200).json(chat.groupAdmin);
-  } else {
-    res.status(404);
-    throw new Error("Chat not found");
-  }
-});
+//@description     Checks whether a list of JSON objects contains a given object
+//@params          list: the list of objects (array of JSON objects)
+//                 user: the given object (JSON object)
+//@returns         Whether or not the list contains the object (Boolean)
+const contains = (list, user) => {
+  return list.some((elem) => {
+    return JSON.stringify(user) === JSON.stringify(elem);
+  });
+};
 
 //@description     Change the group admin for a chat (you are the admin)
 //@route           PUT /api/chat/change-group-admin
@@ -99,6 +95,11 @@ const changeGroupAdmin = asyncHandler(async (req, res) => {
   if (chat?.groupAdmin.toString() !== req.user._id.toString()) {
     res.status(400);
     throw new Error("Only the group admin can change the group admin");
+  }
+
+  if (!contains(chat?.users, newAdminId)) {
+    res.status(400);
+    throw new Error("The new group admin must be in the group");
   }
 
   const updatedChat = await Chat.findByIdAndUpdate(
@@ -148,11 +149,19 @@ const removeFromGroup = asyncHandler(async (req, res) => {
   const chat = await Chat.findOne({ _id: chatId });
 
   if (
-    userId !== req.user._id &&
+    userId.toString() !== req.user._id.toString() &&
     chat?.groupAdmin.toString() !== req.user._id.toString()
   ) {
     res.status(400);
     throw new Error("Only the group admin can remove someone from the group");
+  }
+
+  if (
+    userId.toString() === req.user._id.toString() &&
+    chat?.groupAdmin.toString() === req.user._id.toString()
+  ) {
+    res.status(400);
+    throw new Error("Please change the group admin before you leave the group");
   }
 
   const chatWithoutUser = await Chat.findByIdAndUpdate(
@@ -182,6 +191,11 @@ const addToGroup = asyncHandler(async (req, res) => {
   if (chat?.groupAdmin.toString() !== req.user._id.toString()) {
     res.status(400);
     throw new Error("Only the group admin can add someone to the group");
+  }
+
+  if (contains(chat?.users, userId)) {
+    res.status(400);
+    throw new Error("User is already in the group");
   }
 
   const chatWithUser = await Chat.findByIdAndUpdate(
@@ -230,7 +244,6 @@ const fetchAll = asyncHandler(async (req, res) => {
 module.exports = {
   createOneOnOne,
   createGroup,
-  findGroupAdmin,
   changeGroupAdmin,
   renameGroup,
   removeFromGroup,

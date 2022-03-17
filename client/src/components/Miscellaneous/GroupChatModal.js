@@ -73,6 +73,15 @@ const GroupChatModal = ({ children }) => {
   };
 
   const deleteUser = async (userToDelete) => {
+    if (userToDelete._id.toString() === user._id.toString()) {
+      toast({
+        title: "You cannot remove the group admin",
+        status: "warning",
+        position: "top",
+        duration: 10000,
+        isClosable: true,
+      });
+    }
     setSelectedUsers(
       selectedUsers.filter((sel) => sel._id !== userToDelete._id)
     );
@@ -156,7 +165,12 @@ const GroupChatModal = ({ children }) => {
                 onChange={(e) => setGroupChatName(e.target.value)}
               />
             </FormControl>
-            <FormControl id="username-group-chat" d="flex" alignItems="center" onKeyDown={addUserByEnter}>
+            <FormControl
+              id="username-group-chat"
+              d="flex"
+              alignItems="center"
+              onKeyDown={addUserByEnter}
+            >
               <Input
                 placeholder="Add usernames of others one by one"
                 mb="3"
@@ -167,17 +181,26 @@ const GroupChatModal = ({ children }) => {
               </Button>
             </FormControl>
             <Flex flexWrap="wrap">
+              <UserBadge
+                key={user._id}
+                user={user}
+                adminId={user._id}
+                handleFunction={() => deleteUser(user)}
+              />
               {selectedUsers.map((u) => (
                 <UserBadge
                   key={u._id}
                   user={u}
+                  adminId={user._id}
                   handleFunction={() => deleteUser(u)}
                 />
               ))}
             </Flex>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={createGroupChat} colorScheme="blue">Create Chat</Button>
+            <Button onClick={createGroupChat} colorScheme="blue">
+              Create Chat
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

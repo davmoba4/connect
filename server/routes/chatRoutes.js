@@ -15,7 +15,6 @@ const router = express.Router();
 
 router.post("/create-one-on-one", JWTAuth, createOneOnOne);
 router.post("/create-group", JWTAuth, createGroup);
-router.get("/find-group-admin", JWTAuth, findGroupAdmin);
 router.put("/change-group-admin", JWTAuth, changeGroupAdmin);
 router.put("/rename-group", JWTAuth, renameGroup);
 router.put("/remove-from-group", JWTAuth, removeFromGroup);

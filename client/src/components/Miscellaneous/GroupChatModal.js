@@ -183,16 +183,18 @@ const GroupChatModal = ({ children }) => {
             <Flex flexWrap="wrap">
               <UserBadge
                 key={user._id}
-                user={user}
+                badgeUser={user}
                 adminId={user._id}
-                handleFunction={() => deleteUser(user)}
+                handleClickFunction={null}
+                handleCloseFunction={() => deleteUser(user)}
               />
               {selectedUsers.map((u) => (
                 <UserBadge
                   key={u._id}
-                  user={u}
+                  badgeUser={u}
                   adminId={user._id}
-                  handleFunction={() => deleteUser(u)}
+                  handleClickFunction={null}
+                  handleCloseFunction={() => deleteUser(u)}
                 />
               ))}
             </Flex>

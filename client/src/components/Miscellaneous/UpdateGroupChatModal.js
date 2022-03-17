@@ -30,6 +30,8 @@ const UpdateGroupChatModal = ({}) => {
 
   const toast = useToast();
 
+  const chatOneOnOne = async (userToChatWith) => {}
+
   const removeUser = async () => { };
   
   const renameGroupByEnter = (event) => {
@@ -64,8 +66,9 @@ const UpdateGroupChatModal = ({}) => {
               {selectedChat.users.map((u) => (
                 <UserBadge
                   key={u._id}
-                  user={u}
+                  badgeUser={u}
                   adminId={selectedChat.groupAdmin._id}
+                  handleClickFunction={() => chatOneOnOne(u)}
                   handleFunction={() => removeUser(u)}
                 />
               ))}
@@ -82,7 +85,7 @@ const UpdateGroupChatModal = ({}) => {
                 Update
               </Button>
             </FormControl>
-            {selectedChat.groupAdmin._id.toString() === user._id.toString() ?
+            {selectedChat.groupAdmin._id === user._id ?
             (<><FormControl id="username-update-group-chat" d="flex" alignItems="center" onKeyDown={addUserByEnter}>
               <Input
                 placeholder="Add usernames of others one by one"

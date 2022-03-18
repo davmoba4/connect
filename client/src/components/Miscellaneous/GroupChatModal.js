@@ -60,6 +60,7 @@ const GroupChatModal = ({ children }) => {
       }
 
       setSelectedUsers([...selectedUsers, data]);
+      setUsername("");
     } catch (error) {
       toast({
         title: "Error occurred!",
@@ -172,6 +173,7 @@ const GroupChatModal = ({ children }) => {
               onKeyDown={addUserByEnter}
             >
               <Input
+                value={username}
                 placeholder="Add usernames of others one by one"
                 mb="3"
                 onChange={(e) => setUsername(e.target.value)}

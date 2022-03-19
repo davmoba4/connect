@@ -3,16 +3,6 @@ const Chat = require("../models/chatModel");
 const Message = require("../models/messageModel");
 const User = require("../models/userModel");
 
-//@description     Checks whether a list of JSON objects contains a given object
-//@params          list: the list of objects (array of JSON objects)
-//                 user: the given object (JSON object)
-//@returns         Whether or not the list contains the object (Boolean)
-const contains = (list, user) => {
-  return list.some((elem) => {
-    return JSON.stringify(user) === JSON.stringify(elem);
-  });
-};
-
 //@description     Create a message that is sent
 //@route           POST /api/message/
 //@access          Protected
@@ -26,7 +16,7 @@ const sendMessage = asyncHandler(async (req, res) => {
 
   try {
     const chat = await Chat.findOne({ _id: chatId });
-    if (!contains(chat.users, req.user._id)) {
+    if (!chat.users.includes(req.user._id)) {
       res.status(400);
       throw new Error("User must be in the chat to send a message");
     }
@@ -63,7 +53,7 @@ const fetchMessages = asyncHandler(async (req, res) => {
     const messages = await Message.find({ chat: req.params.chatId }).populate(
       "chat"
     );
-    if (!contains(messages[0].chat.users, req.user._id)) {
+    if (!messages[0].chat.users.includes(req.user._id)) {
       res.status(400);
       throw new Error("User must be in the chat to see it's messages");
     }
@@ -93,11 +83,11 @@ const readMessage = asyncHandler(async (req, res) => {
 
   try {
     const message = await Message.findOne({ _id: messageId }).populate("chat");
-    if (!contains(message.chat.users, req.user._id)) {
+    if (!message.chat.users.includes(req.user._id)) {
       res.status(400);
       throw new Error("User must be in the chat to read the message");
     }
-    if (contains(message.readBy, req.user._id)) {
+    if (message.readBy.includes(req.user._id)) {
       res.status(400);
       throw new Error("User already read the message");
     }

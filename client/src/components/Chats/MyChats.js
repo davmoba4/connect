@@ -115,13 +115,13 @@ const MyChats = () => {
                 bg={selectedChat === chat ? "#38B2AC" : "#B4CFB0"}
                 borderRadius="10"
               >
-                <Text>
+                <Text fontSize="lg">
                   {chat.isGroupChat
                     ? chat.chatName
                     : getSenderUsername(loggedUser, chat.users)}
                 </Text>
                 {chat.newestMessage && (
-                  <Text fontSize="xs">
+                  <Text fontSize="sm">
                     <strong>{chat.newestMessage.sender.username} : </strong>
                     {chat.newestMessage.content.length > 50
                       ? chat.newestMessage.content.subString(0, 51) + "..."

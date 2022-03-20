@@ -19,7 +19,7 @@ import { ChatState } from "../../context/ChatProvider";
 import UserBadge from "./UserBadge";
 
 const GroupChatModal = ({ children }) => {
-  const { user, chats, setChats } = ChatState();
+  const { user, chats, setChats, setSelectedChat } = ChatState();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const [groupChatName, setGroupChatName] = useState("");
@@ -125,6 +125,9 @@ const GroupChatModal = ({ children }) => {
         config
       );
       setChats([data, ...chats]);
+      setSelectedChat(data);
+      setGroupChatName("");
+      setSelectedUsers([]);
       onClose();
       toast({
         title: "New group chat created!",

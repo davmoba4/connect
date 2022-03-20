@@ -17,7 +17,7 @@ import { useState } from "react";
 import { ChatState } from "../../context/ChatProvider";
 
 const OneOnOneChatModal = ({ children }) => {
-  const { user, chats, setChats } = ChatState();
+  const { user, chats, setChats, setSelectedChat } = ChatState();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [username, setUsername] = useState("");
 
@@ -54,6 +54,8 @@ const OneOnOneChatModal = ({ children }) => {
         config
       );
       setChats([data, ...chats]);
+      setSelectedChat(data);
+      setUsername("");
       onClose();
       toast({
         title: "New one on one chat created!",
@@ -102,7 +104,9 @@ const OneOnOneChatModal = ({ children }) => {
             </FormControl>
           </ModalBody>
           <ModalFooter>
-            <Button onClick={createChat} colorScheme="blue">Create Chat</Button>
+            <Button onClick={createChat} colorScheme="blue">
+              Create Chat
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

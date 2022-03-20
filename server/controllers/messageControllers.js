@@ -53,6 +53,9 @@ const fetchMessages = asyncHandler(async (req, res) => {
     const messages = await Message.find({ chat: req.params.chatId }).populate(
       "chat"
     );
+    if (messages.length === 0) {
+      res.status(200).json(messages);
+    }
     if (!messages[0].chat.users.includes(req.user._id)) {
       res.status(400);
       throw new Error("User must be in the chat to see it's messages");
@@ -70,6 +73,7 @@ const fetchMessages = asyncHandler(async (req, res) => {
         res.status(200).json(results);
       });
   } catch (error) {
+    console.log(error);
     res.status(400);
     throw new Error(error.message);
   }

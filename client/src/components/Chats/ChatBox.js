@@ -1,14 +1,103 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import { Box, Flex, IconButton, Text, useColorMode } from "@chakra-ui/react";
-import React from "react";
+import {
+  Box,
+  Flex,
+  FormControl,
+  IconButton,
+  Input,
+  Spinner,
+  Text,
+  useColorMode,
+  useToast,
+} from "@chakra-ui/react";
+import React, { useEffect, useState } from "react";
 import { getSenderObject, getSenderUsername } from "../../config/ChatLogic";
 import { ChatState } from "../../context/ChatProvider";
 import UpdateGroupChatModal from "../Miscellaneous/UpdateGroupChatModal";
 import ProfileModal from "../Miscellaneous/ProfileModal";
+import Messages from "./Messages";
+import axios from "axios";
 
 const ChatBox = () => {
   const { colorMode } = useColorMode();
   const { user, selectedChat, setSelectedChat } = ChatState();
+
+  const [loading, setLoading] = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState("");
+
+  const toast = useToast();
+
+  const fetchMessages = async () => {
+    if (!selectedChat) return;
+
+    try {
+      setLoading(true);
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.get(
+        `/api/message/${selectedChat._id}`,
+        config
+      );
+      if (data) {
+        setMessages(data);
+      }
+      setLoading(false);
+    } catch (error) {
+      toast({
+        title: "Error occurred!",
+        description: "Failed to load the messages",
+        status: "error",
+        position: "top",
+        duration: 10000,
+        isClosable: true,
+      });
+    }
+  };
+
+  const sendMessage = async (event) => {
+    if (event.key === "Enter" && newMessage) {
+      try {
+        setNewMessage("");
+        const config = {
+          headers: {
+            "Content-type": "application/json",
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        const { data } = await axios.post(
+          "/api/message",
+          {
+            chatId: selectedChat._id,
+            content: newMessage,
+          },
+          config
+        );
+        setMessages([...messages, data]);
+      } catch (error) {
+        toast({
+          title: "Error occurred!",
+          description: "Failed to send the message",
+          status: "error",
+          position: "top",
+          duration: 10000,
+          isClosable: true,
+        });
+      }
+    }
+  };
+
+  const handleTyping = (event) => {
+    setNewMessage(event.target.value);
+  };
+
+  useEffect(() => {
+    fetchMessages();
+  }, [selectedChat]);
 
   return (
     <Box
@@ -61,7 +150,32 @@ const ChatBox = () => {
             borderRadius="10"
             bg={colorMode === "dark" ? "#203239" : "#EEEBDD"}
           >
-            {/* Messages */}
+            {loading ? (
+              <Spinner size="xl" w="20" h="20" alignSelf="center" m="auto" />
+            ) : (
+              <Flex
+                flexDir="column"
+                overflowY="scroll"
+                style={{ scrollbarWidth: "none" }}
+              >
+                <Messages messages={messages} />
+              </Flex>
+            )}
+
+            <FormControl
+              mt="3"
+              id="new-message"
+              onKeyDown={sendMessage}
+              isRequired
+            >
+              <Input
+                value={newMessage}
+                placeholder="Enter a message and then press ENTER to send..."
+                onChange={handleTyping}
+                variant="filled"
+                bg={colorMode === "dark" ? "#557B83" : "#E5EFC1"}
+              />
+            </FormControl>
           </Flex>
         </>
       ) : (

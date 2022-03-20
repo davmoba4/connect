@@ -20,7 +20,8 @@ import axios from "axios";
 
 const ChatBox = () => {
   const { colorMode } = useColorMode();
-  const { user, selectedChat, setSelectedChat } = ChatState();
+  const { user, selectedChat, setSelectedChat, fetchAgain, setFetchAgain } =
+    ChatState();
 
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -78,6 +79,7 @@ const ChatBox = () => {
           config
         );
         setMessages([...messages, data]);
+        setFetchAgain(!fetchAgain);
       } catch (error) {
         toast({
           title: "Error occurred!",

@@ -23,7 +23,8 @@ import { getSenderUsername } from "../../config/ChatLogic";
 
 const MyChats = () => {
   const { colorMode } = useColorMode();
-  const { user, chats, setChats, selectedChat, setSelectedChat, fetchAgain } = ChatState();
+  const { user, chats, setChats, selectedChat, setSelectedChat, fetchAgain } =
+    ChatState();
   const [loggedUser, setLoggedUser] = useState("");
   const toast = useToast();
 
@@ -111,8 +112,8 @@ const MyChats = () => {
                 cursor="pointer"
                 px="3"
                 py="2"
-                color={selectedChat === chat ? "white" : "black"}
-                bg={selectedChat === chat ? "#38B2AC" : "#B4CFB0"}
+                color={selectedChat._id === chat._id ? "white" : "black"}
+                bg={selectedChat._id === chat._id ? "#38B2AC" : "#B4CFB0"}
                 borderRadius="10"
               >
                 <Text fontSize="lg">

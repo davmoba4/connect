@@ -12,9 +12,11 @@ import {
   IconButton,
   Text,
   Image,
+  useColorMode,
 } from "@chakra-ui/react";
 
 const ProfileModal = ({ user, children }) => {
+  const { colorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
@@ -22,7 +24,7 @@ const ProfileModal = ({ user, children }) => {
       {children ? (
         <span onClick={onOpen}>{children}</span>
       ) : (
-        <IconButton d={{ base: "flex" }} icon={<ViewIcon />} onClick={onOpen} />
+        <IconButton d={{ base: "flex" }} icon={<ViewIcon />} bg={colorMode === "dark" ? null : "#FBF8F1"} onClick={onOpen} />
       )}
       <Modal size="lg" onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />

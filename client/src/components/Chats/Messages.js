@@ -20,12 +20,11 @@ const Messages = ({ messages }) => {
           <div style={{ display: "flex" }} key={m._id}>
             {(isOtherSenderEnd(messages, m, i, user._id) ||
               isOtherLastMessage(messages, i, user._id)) && (
-              <Tooltip label={m.sender.name} placement="bottom-start" hasArrow>
+              <Tooltip label={m.sender.username} placement="bottom-start" hasArrow>
                 <Avatar
                   mt="2.5"
                   mr="1"
                   size="sm"
-                  cursor="pointer"
                   name={m.sender.username}
                   src={m.sender.picture}
                 />

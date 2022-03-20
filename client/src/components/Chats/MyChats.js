@@ -124,7 +124,7 @@ const MyChats = () => {
                   <Text fontSize="sm">
                     <strong>{chat.newestMessage.sender.username} : </strong>
                     {chat.newestMessage.content.length > 50
-                      ? chat.newestMessage.content.subString(0, 51) + "..."
+                      ? chat.newestMessage.content.substring(0, 51) + "..."
                       : chat.newestMessage.content}
                   </Text>
                 )}

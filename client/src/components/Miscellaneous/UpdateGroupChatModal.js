@@ -13,15 +13,17 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
+  useColorMode,
   useDisclosure,
   useToast,
 } from "@chakra-ui/react";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ChatState } from "../../context/ChatProvider";
 import UserBadge from "./UserBadge";
 
-const UpdateGroupChatModal = ({}) => {
+const UpdateGroupChatModal = () => {
+  const { colorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { user, selectedChat, setSelectedChat, fetchAgain, setFetchAgain } =
     ChatState();
@@ -198,7 +200,7 @@ const UpdateGroupChatModal = ({}) => {
 
   return (
     <>
-      <IconButton icon={<ViewIcon />} onClick={onOpen} />
+      <IconButton icon={<ViewIcon />} bg={colorMode === "dark" ? null : "#FBF8F1"} onClick={onOpen} />
 
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />

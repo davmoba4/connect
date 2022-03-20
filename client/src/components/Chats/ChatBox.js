@@ -173,7 +173,7 @@ const ChatBox = () => {
                 placeholder="Enter a message and then press ENTER to send..."
                 onChange={handleTyping}
                 variant="filled"
-                bg={colorMode === "dark" ? "#557B83" : "#E5EFC1"}
+                bg={colorMode === "dark" ? "#557B83" : "#F4FCD9"}
               />
             </FormControl>
           </Flex>

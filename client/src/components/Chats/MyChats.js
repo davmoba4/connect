@@ -112,8 +112,8 @@ const MyChats = () => {
                 cursor="pointer"
                 px="3"
                 py="2"
-                color={selectedChat._id === chat._id ? "white" : "black"}
-                bg={selectedChat._id === chat._id ? "#38B2AC" : "#B4CFB0"}
+                color={selectedChat?._id === chat._id ? "white" : "black"}
+                bg={selectedChat?._id === chat._id ? "#38B2AC" : "#B4CFB0"}
                 borderRadius="10"
               >
                 <Text fontSize="lg">

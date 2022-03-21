@@ -5,8 +5,10 @@ import {
   FormControl,
   IconButton,
   Input,
+  InputRightElement,
   Spinner,
   Text,
+  Tooltip,
   useColorMode,
   useToast,
 } from "@chakra-ui/react";
@@ -17,6 +19,7 @@ import UpdateGroupChatModal from "../Miscellaneous/UpdateGroupChatModal";
 import ProfileModal from "../Miscellaneous/ProfileModal";
 import Messages from "./Messages";
 import axios from "axios";
+import EmojiModal from "../Miscellaneous/EmojiModal";
 
 const ChatBox = () => {
   const { colorMode } = useColorMode();
@@ -177,6 +180,12 @@ const ChatBox = () => {
                 variant="filled"
                 bg={colorMode === "dark" ? "#557B83" : "#F4FCD9"}
               />
+              <InputRightElement>
+                <EmojiModal
+                  newMessage={newMessage}
+                  setNewMessage={setNewMessage}
+                />
+              </InputRightElement>
             </FormControl>
           </Flex>
         </>

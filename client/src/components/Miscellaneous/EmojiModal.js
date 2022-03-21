@@ -16,22 +16,37 @@ const EmojiModal = ({ newMessage, setNewMessage }) => {
   const { colorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  var codePoints = Array.from(new Array(50), (x, i) => i + 600);
-  codePoints = codePoints.concat(Array.from(new Array(30), (x, i) => i + 910));
-  codePoints = codePoints.concat(Array.from(new Array(2), (x, i) => i + 970));
-  codePoints = codePoints.concat(Array.from(new Array(4), (x, i) => i + 973));
-  codePoints = codePoints.concat(["44D", "44E", "44A", "44F", "64C", "64F"])
+  var codePoints = Array.from(new Array(50), (x, i) => "0x1F" + (i + 600));
+  codePoints = codePoints.concat(
+    Array.from(new Array(28), (x, i) => "0x1F" + (i + 910))
+  );
+  codePoints = codePoints.concat(
+    Array.from(new Array(2), (x, i) => "0x1F" + (i + 970))
+  );
+  codePoints = codePoints.concat(
+    Array.from(new Array(4), (x, i) => "0x1F" + (i + 973))
+  );
+  codePoints = codePoints.concat([
+    "0x1F44D",
+    "0x1F44E",
+    "0x1F44A",
+    "0x1F44F",
+    "0x1F64C",
+    "0x1F64F",
+    "0x1F60D",
+    "0x2764",
+  ]);
 
   return (
     <>
       <Tooltip label="Choose from emojis" hasArrow placement="bottom-end">
         <Button
-          fontSize="2xl"
+          fontSize="xl"
           pt="0.5"
           pr="3.5"
           onClick={onOpen}
-          borderWidth="1px"
-          bg={colorMode === "dark" ? null : "#FBF8F1"}
+          borderRadius="0"
+          bg={colorMode === "dark" ? "#557B83" : "#F4FCD9"}
         >
           {String.fromCodePoint(0x1f600)}
         </Button>
@@ -54,14 +69,22 @@ const EmojiModal = ({ newMessage, setNewMessage }) => {
                 fontSize="xl"
                 mb="2"
                 onClick={(event) => {
-                  setNewMessage(newMessage + event.target.innerHTML);
+                  c !== "0x2764"
+                    ? setNewMessage(newMessage + event.target.innerHTML)
+                    : setNewMessage(
+                        newMessage +
+                          event.target.innerHTML +
+                          String.fromCodePoint(0xfe0f)
+                      );
                 }}
               >
-                {String.fromCodePoint("0x1f" + c)}
+                {String.fromCodePoint(c)}
               </Button>
             ))}
           </ModalBody>
-          <ModalFooter mb="2" fontSize="xs">* Scroll for more...</ModalFooter>
+          <ModalFooter mb="2" fontSize="xs">
+            * Scroll for more...
+          </ModalFooter>
         </ModalContent>
       </Modal>
     </>

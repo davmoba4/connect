@@ -1,6 +1,7 @@
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import {
   Box,
+  Button,
   Flex,
   FormControl,
   IconButton,
@@ -63,8 +64,13 @@ const ChatBox = () => {
     }
   };
 
+  const sendMessageByEnter = async (event) => {
+    if (event.key === "Enter") {
+      sendMessage();
+    }
+  };
   const sendMessage = async (event) => {
-    if (event.key === "Enter" && newMessage) {
+    if (newMessage) {
       try {
         setNewMessage("");
         const config = {
@@ -168,24 +174,32 @@ const ChatBox = () => {
             )}
 
             <FormControl
+              d="flex"
+              alignItems="center"
               mt="3"
               id="new-message"
-              onKeyDown={sendMessage}
+              onKeyDown={sendMessageByEnter}
               isRequired
             >
               <Input
+                roundedRight="none"
                 value={newMessage}
                 placeholder="Enter a message and then press ENTER to send..."
                 onChange={handleTyping}
                 variant="filled"
                 bg={colorMode === "dark" ? "#557B83" : "#F4FCD9"}
               />
-              <InputRightElement>
-                <EmojiModal
-                  newMessage={newMessage}
-                  setNewMessage={setNewMessage}
-                />
-              </InputRightElement>
+              <EmojiModal
+                newMessage={newMessage}
+                setNewMessage={setNewMessage}
+              />
+              <Button
+                roundedLeft="none"
+                colorScheme="teal"
+                onClick={sendMessage}
+              >
+                SEND
+              </Button>
             </FormControl>
           </Flex>
         </>

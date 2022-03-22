@@ -17,6 +17,7 @@ import axios from "axios";
 import React, { useState } from "react";
 import { ChatState } from "../../context/ChatProvider";
 import UserBadge from "./UserBadge";
+import {contains} from "../../config/ChatLogic"
 
 const GroupChatModal = ({ children }) => {
   const { user, chats, setChats, setSelectedChat } = ChatState();
@@ -27,12 +28,6 @@ const GroupChatModal = ({ children }) => {
   const [selectedUsers, setSelectedUsers] = useState([]);
 
   const toast = useToast();
-
-  const contains = (list, user) => {
-    return list.some((elem) => {
-      return JSON.stringify(user) === JSON.stringify(elem);
-    });
-  };
 
   const addUserByEnter = (event) => {
     if (event.key === "Enter") {

@@ -6,10 +6,8 @@ import {
   FormControl,
   IconButton,
   Input,
-  InputRightElement,
   Spinner,
   Text,
-  Tooltip,
   useColorMode,
   useToast,
 } from "@chakra-ui/react";
@@ -21,6 +19,10 @@ import ProfileModal from "../Miscellaneous/ProfileModal";
 import Messages from "./Messages";
 import axios from "axios";
 import EmojiModal from "../Miscellaneous/EmojiModal";
+import io from "socket.io-client";
+
+const ENDPOINT = "http://localhost:5000";
+var socket, selectedChatCompare;
 
 const ChatBox = () => {
   const { colorMode } = useColorMode();
@@ -30,6 +32,7 @@ const ChatBox = () => {
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
+  const [socketConnected, setSocketConnected] = useState(false);
 
   const toast = useToast();
 
@@ -52,6 +55,7 @@ const ChatBox = () => {
         setMessages(data);
       }
       setLoading(false);
+      socket.emit("join chat", selectedChat._id);
     } catch (error) {
       toast({
         title: "Error occurred!",
@@ -87,6 +91,7 @@ const ChatBox = () => {
           },
           config
         );
+        socket.emit("send message", data);
         setMessages([...messages, data]);
         setFetchAgain(!fetchAgain);
       } catch (error) {
@@ -107,8 +112,44 @@ const ChatBox = () => {
   };
 
   useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on("connected", () => setSocketConnected(true));
+  }, []);
+
+  useEffect(() => {
     fetchMessages();
+    selectedChatCompare = selectedChat;
   }, [selectedChat]);
+
+  useEffect(() => {
+    async function readMessage(messageId){
+      try {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        await axios.put("/api/message/read", { messageId: messageId }, config);
+        setFetchAgain(fetchAgain => !fetchAgain);
+      } catch (error) {
+        return;
+      }
+    };
+
+    socket.on("message received", (newMessageReceived) => {
+      if (
+        !selectedChatCompare ||
+        selectedChatCompare._id !== newMessageReceived.chat._id
+      ) {
+        setFetchAgain(fetchAgain => !fetchAgain);
+        //give notification
+      } else {
+        setMessages(messages => [...messages, newMessageReceived]);
+        readMessage(newMessageReceived._id);
+      }
+    });
+  }, []);
 
   return (
     <Box

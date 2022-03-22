@@ -20,11 +20,19 @@ import GroupChatModal from "../Miscellaneous/GroupChatModal";
 import OneOnOneChatModal from "../Miscellaneous/OneOnOneChatModal";
 import ChatsLoading from "../Miscellaneous/ChatsLoading";
 import { getSenderUsername } from "../../config/ChatLogic";
+import { containsFull } from "../../config/ChatLogic";
 
 const MyChats = () => {
   const { colorMode } = useColorMode();
-  const { user, chats, setChats, selectedChat, setSelectedChat, fetchAgain } =
-    ChatState();
+  const {
+    user,
+    chats,
+    setChats,
+    selectedChat,
+    setSelectedChat,
+    fetchAgain,
+    setFetchAgain,
+  } = ChatState();
   const [loggedUser, setLoggedUser] = useState("");
   const toast = useToast();
 
@@ -46,6 +54,32 @@ const MyChats = () => {
         duration: 10000,
         isClosable: true,
       });
+    }
+  };
+
+  const clickChat = async (chat) => {
+    setSelectedChat(chat);
+
+    if (
+      chat.newestMessage &&
+      chat.newestMessage.sender._id !== user._id &&
+      !containsFull(chat.newestMessage.readBy, user)
+    ) {
+      try {
+        const config = {
+          headers: {
+            Authorization: `Bearer ${user.token}`,
+          },
+        };
+        await axios.put(
+          "/api/message/read",
+          { messageId: chat.newestMessage._id },
+          config
+        );
+        setFetchAgain(!fetchAgain);
+      } catch (error) {
+        return;
+      }
     }
   };
 
@@ -108,21 +142,53 @@ const MyChats = () => {
             {chats.map((chat) => (
               <Box
                 key={chat._id}
-                onClick={() => setSelectedChat(chat)}
+                onClick={() => clickChat(chat)}
                 cursor="pointer"
                 px="3"
                 py="2"
+                borderColor="#39AEA9"
+                borderWidth={
+                  (chat.newestMessage &&
+                    containsFull(chat.newestMessage.readBy, user)) ||
+                  !chat.newestMessage
+                    ? "0px"
+                    : "3px"
+                }
                 color={selectedChat?._id === chat._id ? "white" : "black"}
-                bg={selectedChat?._id === chat._id ? "#38B2AC" : "#B4CFB0"}
+                bg={
+                  selectedChat?._id === chat._id
+                    ? "#38B2AC"
+                    : (chat.newestMessage &&
+                        containsFull(chat.newestMessage.readBy, user)) ||
+                      !chat.newestMessage
+                    ? "#B4CFB0"
+                    : "#97DBAE"
+                }
                 borderRadius="10"
               >
-                <Text fontSize="lg">
+                <Text
+                  fontSize="lg"
+                  fontWeight={
+                    (chat.newestMessage &&
+                      containsFull(chat.newestMessage.readBy, user)) ||
+                    !chat.newestMessage
+                      ? null
+                      : "bold"
+                  }
+                >
                   {chat.isGroupChat
                     ? chat.chatName
                     : getSenderUsername(loggedUser, chat.users)}
                 </Text>
                 {chat.newestMessage && (
-                  <Text fontSize="sm">
+                  <Text
+                    fontSize="sm"
+                    fontWeight={
+                      containsFull(chat.newestMessage.readBy, user)
+                        ? null
+                        : "bold"
+                    }
+                  >
                     <strong>{chat.newestMessage.sender.username} : </strong>
                     {chat.newestMessage.content.length > 50
                       ? chat.newestMessage.content.substring(0, 51) + "..."

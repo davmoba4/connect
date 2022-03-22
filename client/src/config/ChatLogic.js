@@ -1,3 +1,15 @@
+export const containsFull = (list, user) => {
+  return list.some((elem) => {
+    return JSON.stringify(user._id) === JSON.stringify(elem._id);
+  });
+};
+
+export const contains = (list, user) => {
+  return list.some((elem) => {
+    return JSON.stringify(user) === JSON.stringify(elem);
+  });
+};
+
 export const getSenderUsername = (loggedUser, users) => {
   return users[0]._id === loggedUser._id
     ? users[1].username

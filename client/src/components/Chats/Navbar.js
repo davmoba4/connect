@@ -25,25 +25,26 @@ const Navbar = () => {
 
   const { user } = ChatState();
 
-  useEffect(() => {
-    async function fetchColorMode() {
-      try {
-        const config = {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
-        };
-        const { data } = await axios.get("/api/setting", config);
+  const fetchColorMode = async () => {
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user.token}`,
+        },
+      };
+      const { data } = await axios.get("/api/setting", config);
 
-        if (data?.darkMode && colorMode !== "dark") {
-          toggleColorMode();
-        } else if (!data?.darkMode && colorMode === "dark") {
-          toggleColorMode();
-        }
-      } catch (error) {
-        return;
+      if (data?.darkMode && colorMode !== "dark") {
+        toggleColorMode();
+      } else if (!data?.darkMode && colorMode === "dark") {
+        toggleColorMode();
       }
+    } catch (error) {
+      return;
     }
+  };
+
+  useEffect(() => {
     fetchColorMode();
   }, []);
 
@@ -95,21 +96,6 @@ const Navbar = () => {
       </Flex>
 
       <div>
-        <Menu>
-          <MenuButton
-            p={1}
-            bg={
-              colorMode === "dark"
-                ? "var(--chakra-colors-whiteAlpha-200)"
-                : "#FBF8F1"
-            }
-            borderRadius="5"
-          >
-            <BellIcon fontSize="2xl" m={1} />
-          </MenuButton>
-          {/* <MenuList></MenuList> */}
-        </Menu>
-
         <Tooltip label="Toggle color mode" hasArrow placement="bottom-end">
           <Button
             ml="2"

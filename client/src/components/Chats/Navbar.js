@@ -71,6 +71,7 @@ const Navbar = () => {
   const handleLogOut = () => {
     localStorage.removeItem("connect-user-data");
     navigate("/");
+    window.location.reload(false);
   };
 
   return (

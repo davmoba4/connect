@@ -55,6 +55,7 @@ const fetchMessages = asyncHandler(async (req, res) => {
     );
     if (messages.length === 0) {
       res.status(200).json(messages);
+      return;
     }
     if (!messages[0].chat.users.includes(req.user._id)) {
       res.status(400);

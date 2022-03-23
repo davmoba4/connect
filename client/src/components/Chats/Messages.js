@@ -8,6 +8,7 @@ import {
   senderMargin,
 } from "../../config/ChatLogic";
 import { Avatar, Flex, Text, Tooltip, useColorMode } from "@chakra-ui/react";
+import { CheckIcon } from "@chakra-ui/icons";
 
 const Messages = ({ messages }) => {
   const { colorMode } = useColorMode();
@@ -17,8 +18,8 @@ const Messages = ({ messages }) => {
     <ScrollableFeed>
       {messages &&
         messages.map((m, i) => (
-          <Flex flexDir="column">
-            <div style={{ display: "flex" }} key={m._id}>
+          <Flex flexDir="column" key={m._id}>
+            <div style={{ display: "flex" }}>
               {(isOtherSenderEnd(messages, m, i, user._id) ||
                 isOtherLastMessage(messages, i, user._id)) && (
                 <Tooltip
@@ -59,8 +60,16 @@ const Messages = ({ messages }) => {
             <Text fontSize="xs" ml={m.sender._id === user._id ? "auto" : "30"}>
               {new Date(m.createdAt).toLocaleDateString() +
                 " - " +
-                new Date(m.createdAt).toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"})}
+                new Date(m.createdAt).toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
             </Text>
+            {i === messages.length - 1 &&
+              m.sender._id === user._id &&
+              m.readBy.length === m.chat.users.length && (
+              <div style={{display: "flex", marginLeft: "auto" }}><CheckIcon mr="1"/> <Text fontSize="xs">READ</Text></div>
+              )}
           </Flex>
         ))}
     </ScrollableFeed>

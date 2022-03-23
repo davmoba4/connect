@@ -26,13 +26,14 @@ var socket, selectedChatCompare;
 
 const ChatBox = () => {
   const { colorMode } = useColorMode();
-  const { user, selectedChat, setSelectedChat, fetchAgain, setFetchAgain } =
+  const { user, selectedChat, setSelectedChat, fetchAgain, setFetchAgain, setTheSocket } =
     ChatState();
 
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
+  const [readAMessage, setReadAMessage] = useState(false);
 
   const toast = useToast();
 
@@ -40,8 +41,10 @@ const ChatBox = () => {
     if (!selectedChat) return;
 
     try {
-      setLoading(true);
-
+      if (selectedChatCompare !== selectedChat) {
+        setLoading(true)
+      }
+      
       const config = {
         headers: {
           Authorization: `Bearer ${user.token}`,
@@ -111,25 +114,26 @@ const ChatBox = () => {
     setNewMessage(event.target.value);
   };
 
-  const readMessage = async (messageId) => {
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    setTheSocket(socket);
+    socket.emit("setup", user);
+    socket.on("connected", () => setSocketConnected(true));
+  }, []);
+
+  const readMessage = async (message) => {
     try {
       const config = {
         headers: {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      await axios.put("/api/message/read", { messageId: messageId }, config);
+      await axios.put("/api/message/read", { messageId: message._id }, config);
       setFetchAgain((fetchAgain) => !fetchAgain);
     } catch (error) {
       return;
     }
   };
-  
-  useEffect(() => {
-    socket = io(ENDPOINT);
-    socket.emit("setup", user);
-    socket.on("connected", () => setSocketConnected(true));
-  }, []);
 
   useEffect(() => {
     fetchMessages();
@@ -145,11 +149,20 @@ const ChatBox = () => {
         setFetchAgain((fetchAgain) => !fetchAgain);
       } else {
         setMessages((messages) => [...messages, newMessageReceived]);
-        readMessage(newMessageReceived._id);
+        readMessage(newMessageReceived);
+        socket.emit("read message", newMessageReceived.chat._id);
       }
     });
-  }, [])
-  
+
+    socket.on("read message", () =>
+      setReadAMessage((readAMessage) => !readAMessage)
+    );
+  }, []);
+
+  useEffect(() => {
+    fetchMessages();
+  }, [readAMessage]);
+
   return (
     <Box
       d={{ base: selectedChat ? "flex" : "none", md: "flex" }}

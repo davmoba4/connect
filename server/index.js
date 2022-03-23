@@ -59,4 +59,6 @@ io.on("connection", (socket) => {
       socket.in(user._id).emit("message received", newMessageSent);
     });
   });
+
+  socket.on("read message", (roomId) => socket.in(roomId).emit("read message"))
 });

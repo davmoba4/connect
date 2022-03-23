@@ -32,6 +32,7 @@ const MyChats = () => {
     setSelectedChat,
     fetchAgain,
     setFetchAgain,
+    theSocket,
   } = ChatState();
   const [loggedUser, setLoggedUser] = useState("");
   const toast = useToast();
@@ -77,6 +78,7 @@ const MyChats = () => {
           config
         );
         setFetchAgain(!fetchAgain);
+        theSocket.emit("read message", chat._id);
       } catch (error) {
         return;
       }

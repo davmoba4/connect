@@ -140,7 +140,7 @@ const MyChats = () => {
         bg={colorMode === "dark" ? "#203239" : "#EEEBDD"}
       >
         {chats ? (
-          <Stack overflowY="scroll">
+          <Stack overflowY="scroll" style={{scrollbarWidth: "none"}}>
             {chats.map((chat) => (
               <Box
                 key={chat._id}

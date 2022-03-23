@@ -17,3 +17,7 @@
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
 }
+
+.styles_scrollable-div__prSCv{
+  scrollbar-width: none;
+}

@@ -61,6 +61,7 @@ const EmojiModal = ({ newMessage, setNewMessage }) => {
             flexWrap="wrap"
             alignItems="center"
             overflowY="scroll"
+            style={{scrollbarWidth: "none"}}
             justifyContent="space-between"
           >
             {codePoints.map((c) => (

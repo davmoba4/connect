@@ -114,13 +114,6 @@ const ChatBox = () => {
     setNewMessage(event.target.value);
   };
 
-  useEffect(() => {
-    socket = io(ENDPOINT);
-    setTheSocket(socket);
-    socket.emit("setup", user);
-    socket.on("connected", () => setSocketConnected(true));
-  }, []);
-
   const readMessage = async (message) => {
     try {
       const config = {
@@ -134,6 +127,13 @@ const ChatBox = () => {
       return;
     }
   };
+
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    setTheSocket(socket);
+    socket.emit("setup", user);
+    socket.on("connected", () => setSocketConnected(true));
+  }, []);
 
   useEffect(() => {
     fetchMessages();

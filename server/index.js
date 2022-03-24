@@ -49,6 +49,21 @@ io.on("connection", (socket) => {
     console.log("User joined room: " + roomId);
   });
 
+  socket.on("self is typing", (data) => {
+    data?.chat?.users.forEach((user) => {
+      if (user._id === data.userId) return;
+
+      socket.in(user._id).emit("other is typing", data.chat._id);
+    });
+  });
+  socket.on("self stopped typing", (data) => {
+    data?.chat?.users.forEach((user) => {
+      if (user._id === data.userId) return;
+
+      socket.in(user._id).emit("other stopped typing", data.chat._id);
+    });
+  });
+
   socket.on("send message", (newMessageSent) => {
     var chat = newMessageSent.chat;
     if (!chat.users) return console.log("chat.users not defined");
@@ -60,5 +75,12 @@ io.on("connection", (socket) => {
     });
   });
 
-  socket.on("read message", (roomId) => socket.in(roomId).emit("read message"))
+  socket.on("self read message", (roomId) =>
+    socket.in(roomId).emit("other read message")
+  );
+
+  socket.off("setup", () => {
+    console.log("USER DISCONNECTED");
+    socket.leave(userData._id);
+  });
 });

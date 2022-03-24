@@ -78,7 +78,7 @@ const MyChats = () => {
           config
         );
         setFetchAgain(!fetchAgain);
-        theSocket.emit("read message", chat._id);
+        theSocket.emit("self read message", chat._id);
       } catch (error) {
         return;
       }

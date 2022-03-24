@@ -20,31 +20,51 @@ import Messages from "./Messages";
 import axios from "axios";
 import EmojiModal from "../Miscellaneous/EmojiModal";
 import io from "socket.io-client";
+import Lottie from "react-lottie";
+import animationData from "../../assets/typing-indicator.json";
 
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
 
 const ChatBox = () => {
   const { colorMode } = useColorMode();
-  const { user, selectedChat, setSelectedChat, fetchAgain, setFetchAgain, setTheSocket } =
-    ChatState();
+  const {
+    user,
+    selectedChat,
+    setSelectedChat,
+    fetchAgain,
+    setFetchAgain,
+    setTheSocket,
+  } = ChatState();
 
   const [loading, setLoading] = useState(false);
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [socketConnected, setSocketConnected] = useState(false);
-  const [readAMessage, setReadAMessage] = useState(false);
+  const [otherReadMessage, setOtherReadMessage] = useState(false);
+  const [selfIsTyping, setSelfIsTyping] = useState(false);
+  const [otherIsTyping, setOtherIsTyping] = useState(false);
+  const [roomWhereTyping, setRoomWhereTyping] = useState();
+  const [checkTyping, setCheckTyping] = useState(false);
+  const [otherIsTypingDisplayed, setOtherIsTypingDisplayed] = useState(false);
 
   const toast = useToast();
+
+  const animationOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: { preserveAspectRatio: "xMidYMid slice" },
+  };
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
 
     try {
       if (selectedChatCompare !== selectedChat) {
-        setLoading(true)
+        setLoading(true);
       }
-      
+
       const config = {
         headers: {
           Authorization: `Bearer ${user.token}`,
@@ -76,8 +96,12 @@ const ChatBox = () => {
       sendMessage();
     }
   };
-  const sendMessage = async (event) => {
+  const sendMessage = async () => {
     if (newMessage) {
+      socket.emit("self stopped typing", {
+        chat: selectedChat,
+        userId: user._id,
+      });
       try {
         setNewMessage("");
         const config = {
@@ -112,6 +136,27 @@ const ChatBox = () => {
 
   const handleTyping = (event) => {
     setNewMessage(event.target.value);
+
+    if (!socketConnected || !event.nativeEvent.data) return;
+
+    if (!selfIsTyping) {
+      setSelfIsTyping(true);
+      socket.emit("self is typing", { chat: selectedChat, userId: user._id });
+    }
+
+    let lastTypingTime = new Date().getTime();
+    var timerLength = 3000;
+    setTimeout(() => {
+      var timeNow = new Date().getTime();
+      var timeDiff = timeNow - lastTypingTime;
+      if (timeDiff >= timerLength && selfIsTyping) {
+        socket.emit("self stopped typing", {
+          chat: selectedChat,
+          userId: user._id,
+        });
+        setSelfIsTyping(false);
+      }
+    }, timerLength);
   };
 
   const readMessage = async (message) => {
@@ -133,7 +178,36 @@ const ChatBox = () => {
     setTheSocket(socket);
     socket.emit("setup", user);
     socket.on("connected", () => setSocketConnected(true));
+
+    socket.on("other is typing", (roomId) => {
+      setOtherIsTyping(true);
+      setRoomWhereTyping(roomId);
+      setCheckTyping((checkTyping) => !checkTyping);
+    });
+    socket.on("other stopped typing", (roomId) => {
+      setOtherIsTyping(false);
+      setRoomWhereTyping(roomId);
+      setCheckTyping((checkTyping) => !checkTyping);
+    });
   }, []);
+
+  useEffect(() => {
+    if (
+      selectedChat &&
+      roomWhereTyping &&
+      roomWhereTyping === selectedChat._id &&
+      otherIsTyping
+    ) {
+      setOtherIsTypingDisplayed(true);
+    } else if (
+      selectedChat &&
+      roomWhereTyping &&
+      roomWhereTyping === selectedChat._id &&
+      !otherIsTyping
+    ) {
+      setOtherIsTypingDisplayed(false);
+    }
+  }, [checkTyping]);
 
   useEffect(() => {
     fetchMessages();
@@ -150,18 +224,18 @@ const ChatBox = () => {
       } else {
         setMessages((messages) => [...messages, newMessageReceived]);
         readMessage(newMessageReceived);
-        socket.emit("read message", newMessageReceived.chat._id);
+        socket.emit("self read message", newMessageReceived.chat._id);
       }
     });
 
-    socket.on("read message", () =>
-      setReadAMessage((readAMessage) => !readAMessage)
+    socket.on("other read message", () =>
+      setOtherReadMessage((otherReadMessage) => !otherReadMessage)
     );
   }, []);
 
   useEffect(() => {
     fetchMessages();
-  }, [readAMessage]);
+  }, [otherReadMessage]);
 
   return (
     <Box
@@ -227,32 +301,41 @@ const ChatBox = () => {
             )}
 
             <FormControl
-              d="flex"
-              alignItems="center"
-              mt="3"
+              mt="1"
               id="new-message"
               onKeyDown={sendMessageByEnter}
               isRequired
             >
-              <Input
-                roundedRight="none"
-                value={newMessage}
-                placeholder="Enter a message and then press ENTER to send..."
-                onChange={handleTyping}
-                variant="filled"
-                bg={colorMode === "dark" ? "#557B83" : "#F4FCD9"}
-              />
-              <EmojiModal
-                newMessage={newMessage}
-                setNewMessage={setNewMessage}
-              />
-              <Button
-                roundedLeft="none"
-                colorScheme="teal"
-                onClick={sendMessage}
-              >
-                SEND
-              </Button>
+              {otherIsTypingDisplayed && (
+                <div>
+                  <Lottie
+                    width={70}
+                    style={{ marginLeft: 0, marginBottom: 10, marginTop: 10 }}
+                    options={animationOptions}
+                  />
+                </div>
+              )}
+              <Flex alignItems="center" mt="1.5">
+                <Input
+                  roundedRight="none"
+                  value={newMessage}
+                  placeholder="Enter a message and then press ENTER to send..."
+                  onChange={handleTyping}
+                  variant="filled"
+                  bg={colorMode === "dark" ? "#557B83" : "#F4FCD9"}
+                />
+                <EmojiModal
+                  newMessage={newMessage}
+                  setNewMessage={setNewMessage}
+                />
+                <Button
+                  roundedLeft="none"
+                  colorScheme="teal"
+                  onClick={sendMessage}
+                >
+                  SEND
+                </Button>
+              </Flex>
             </FormControl>
           </Flex>
         </>

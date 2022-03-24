@@ -26,6 +26,10 @@ import animationData from "../../assets/typing-indicator.json";
 const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
 
+/*
+ *@description     The component that holds the chat messages and
+ *                 the chat message input for a particular chat
+ */
 const ChatBox = () => {
   const { colorMode } = useColorMode();
   const {
@@ -57,6 +61,11 @@ const ChatBox = () => {
     rendererSettings: { preserveAspectRatio: "xMidYMid slice" },
   };
 
+  /*
+   *@description     Uses the selectedChat state variable to fetch all
+   *                 of the messages for that particular chat. It sends
+   *                 a GET request to /api/message/<selected chat ID>
+   */
   const fetchMessages = async () => {
     if (!selectedChat) return;
 
@@ -91,11 +100,22 @@ const ChatBox = () => {
     }
   };
 
+  /*
+   *@description     Calls the function that handles the sending of a
+   *                 message if the enter key was pressed
+   */
   const sendMessageByEnter = async (event) => {
     if (event.key === "Enter") {
       sendMessage();
     }
   };
+  /*
+   *@description     Handles the sending message function. It uses
+   *                 the selectedChat and newMessage state variables
+   *                 to send a POST request to /api/message. It also
+   *                 emits to the socket that the user has stopped
+   *                 typing.
+   */
   const sendMessage = async () => {
     if (newMessage) {
       socket.emit("self stopped typing", {
@@ -134,6 +154,12 @@ const ChatBox = () => {
     }
   };
 
+  /*
+   *@description     Handles the typing function. It sets the newMessage state
+   *                 variable to the event's value. Then it sets a timeout so
+   *                 that the "self is typing" and "self stopped typing" messages
+   *                 are emitted according to whether the user is still typing
+   */
   const handleTyping = (event) => {
     setNewMessage(event.target.value);
 
@@ -159,6 +185,12 @@ const ChatBox = () => {
     }, timerLength);
   };
 
+  /*
+   *@description     Handles the read message function. It sends a PUT request
+   *                 to /api/message/read to update the given message to read by
+   *                 the current user
+   *@params          message: the message to update (Message)
+   */
   const readMessage = async (message) => {
     try {
       const config = {
@@ -173,6 +205,11 @@ const ChatBox = () => {
     }
   };
 
+  /*
+   *@description     Sets up the socket connection to the given ENDPOINT.
+   *                 Also manages the "other is typing" and "other stopped
+   *                 typing" socket events
+   */
   useEffect(() => {
     socket = io(ENDPOINT);
     setTheSocket(socket);
@@ -191,6 +228,13 @@ const ChatBox = () => {
     });
   }, []);
 
+  /*
+   *@description     Uses the roomWhereTyping, selectedChat, and otherIsTyping
+   *                 state variables to determine whether to display the
+   *                 typing indicator for when another user is typing
+   *@dependency      checkTyping: a state variable that calls for the update
+   *                 of the typing indicator display (Boolean)
+   */
   useEffect(() => {
     if (
       selectedChat &&
@@ -209,11 +253,26 @@ const ChatBox = () => {
     }
   }, [checkTyping]);
 
+  /*
+   *@description     Calls the fetchMessages function whenever a new chat
+   *                 is selected. Also sets the selectedChatCompare variable
+   *                 to the selectedChat state variable so that it can hold
+   *                 the current state for comparisons
+   *@dependency      selectedChat: the state variable that holds the current
+   *                 chat that is selected (Chat)
+   */
   useEffect(() => {
     fetchMessages();
     selectedChatCompare = selectedChat;
   }, [selectedChat]);
 
+  /*
+   *@description     manages the "message received" event from the socket.
+   *                 This activates whenever a new message is received by
+   *                 the current user. It also handles the "other read message"
+   *                 socket event that activates whenever another user read the
+   *                 current user's message
+   */
   useEffect(() => {
     socket.on("message received", (newMessageReceived) => {
       if (
@@ -233,6 +292,12 @@ const ChatBox = () => {
     );
   }, []);
 
+  /*
+   *@description     Fetches the current chat's messages whenever another
+   *                 user read the latest message to display the read receipt
+   *@dependency      otherReadMessage: the state variable that updates whether
+   *                 another user read the current user's latest message (Boolean)
+   */
   useEffect(() => {
     fetchMessages();
   }, [otherReadMessage]);

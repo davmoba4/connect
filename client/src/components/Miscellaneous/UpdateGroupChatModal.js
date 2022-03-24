@@ -22,6 +22,9 @@ import React, { useState } from "react";
 import { ChatState } from "../../context/ChatProvider";
 import UserBadge from "./UserBadge";
 
+/*
+ *@description     The modal for updating a group chat
+ */
 const UpdateGroupChatModal = () => {
   const { colorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -34,6 +37,15 @@ const UpdateGroupChatModal = () => {
 
   const toast = useToast();
 
+  /*
+   *@description     Handles the creation of a new one on one chat with
+   *                 the user that was clicked. It uses the given
+   *                 userToChatWith to sed a POST request to
+   *                 /api/chat/create-one-on-one. It updates the
+   *                 selectedChat state variable and calls to fetch
+   *                 the chats again
+   *@params          userToChatWith: the user for the new chat (User)
+   */
   const chatOneOnOne = async (userToChatWith) => {
     try {
       const config = {
@@ -69,6 +81,14 @@ const UpdateGroupChatModal = () => {
     }
   };
 
+  /*
+   *@description     Handles the removing of a user from the group. It uses
+   *                 the state variable of selectedChat and the given
+   *                 userToRemove to send a PUT request to
+   *                 /api/chat/remove-from-group. It updates the selectedChat
+   *                 state variable and calls to fetch the chats again.
+   *@params          userToRemove: the user being removed (User)
+   */
   const removeUser = async (userToRemove) => {
     try {
       const config = {
@@ -97,11 +117,22 @@ const UpdateGroupChatModal = () => {
     }
   };
 
+  /*
+   *@description     Calls the function that handles the renaming of
+   *                 the group by pressing enter
+   */
   const renameGroupByEnter = (event) => {
     if (event.key === "Enter") {
       renameGroup();
     }
   };
+  /*
+   *@description     Handles the renaming of the group. It uses the state
+   *                 variables of selectedChat and groupChatName to send a
+   *                 PUT request to /api/chat/rename-group. It updates the
+   *                 selectedChat state variable and calls to fetch the chats
+   *                 again
+   */
   const renameGroup = async () => {
     try {
       const config = {
@@ -131,11 +162,23 @@ const UpdateGroupChatModal = () => {
     }
   };
 
+  /*
+   *@description     Calls the function to add users by pressing enter
+   */
   const addUserByEnter = (event) => {
     if (event.key === "Enter") {
       addUser();
     }
   };
+  /*
+   *@description     Handles the adding of a new user to the chat. It uses
+   *                 the state variable of username to send a GET request to
+   *                 /api/user?search=<username> to get the ID and then uses
+   *                 it along with the selectedChat state variable to send a
+   *                 PUT request to /api/chat/add-to-group. It updates the
+   *                 selectedChat state variable and calls to fetch the chats
+   *                 again
+   */
   const addUser = async () => {
     try {
       const config = {
@@ -167,6 +210,15 @@ const UpdateGroupChatModal = () => {
     }
   };
 
+  /*
+   *@description     Handles the changing of the group admin. It uses the
+   *                 state variable of newGroupAdmin to send a get request
+   *                 to /api/user?search=<new group admin> to get the ID then
+   *                 uses it along with the selectedChat state variable to send
+   *                 a PUT request to /api/chat/change-group-admin. It updates
+   *                 the selectedChat state variable and calls to fetch the
+   *                 chats again
+   */
   const changeGroupAdmin = async () => {
     try {
       const config = {
@@ -175,7 +227,10 @@ const UpdateGroupChatModal = () => {
         },
       };
 
-      const userData = await axios.get(`/api/user?search=${newGroupAdmin}`, config);
+      const userData = await axios.get(
+        `/api/user?search=${newGroupAdmin}`,
+        config
+      );
 
       const { data } = await axios.put(
         "/api/chat/change-group-admin",
@@ -200,7 +255,11 @@ const UpdateGroupChatModal = () => {
 
   return (
     <>
-      <IconButton icon={<ViewIcon />} bg={colorMode === "dark" ? null : "#FBF8F1"} onClick={onOpen} />
+      <IconButton
+        icon={<ViewIcon />}
+        bg={colorMode === "dark" ? null : "#FBF8F1"}
+        onClick={onOpen}
+      />
 
       <Modal onClose={onClose} isOpen={isOpen} isCentered>
         <ModalOverlay />

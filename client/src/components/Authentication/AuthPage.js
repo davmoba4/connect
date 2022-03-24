@@ -14,15 +14,24 @@ import {
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import React, { useEffect } from "react";
-import logo from "../../assets/logo.png"
-import LogIn from "./LogIn"
-import SignUp from "./SignUp"
+import logo from "../../assets/logo.png";
+import LogIn from "./LogIn";
+import SignUp from "./SignUp";
 import { useNavigate } from "react-router-dom";
 
+/*
+ *@description     The main page seen at login containing the LogIn and SignUp
+ *                 components
+ */
 const AuthPage = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const navigate = useNavigate();
 
+  /*
+   *@description     Gets the stored user data and if it exists, navigates
+   *                 to the chats page. (can't log in if already did so)
+   *@dependency      navigate: the dom component for switching windows
+   */
   useEffect(() => {
     const userData = JSON.parse(localStorage.getItem("connect-user-data"));
 
@@ -81,10 +90,10 @@ const AuthPage = () => {
           </TabList>
           <TabPanels>
             <TabPanel>
-              <LogIn/>
+              <LogIn />
             </TabPanel>
             <TabPanel>
-              <SignUp/>
+              <SignUp />
             </TabPanel>
           </TabPanels>
         </Tabs>

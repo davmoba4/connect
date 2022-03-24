@@ -15,6 +15,9 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+/*
+ *@description     The component that displays the sign up function
+ */
 const SignUp = () => {
   const { colorMode } = useColorMode();
   const toast = useToast();
@@ -27,10 +30,18 @@ const SignUp = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  /*
+   *@description     Toggles whether the password is visible in
+   *                 both the password inputs
+   */
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
+  /*
+   *@description     Uses the cloudinary API to upload the given picture
+   *@params          pic: the picture to upload (file object)
+   */
   const handlePicUpload = (pic) => {
     setLoading(true);
     if (pic === undefined) {
@@ -80,6 +91,12 @@ const SignUp = () => {
     }
   };
 
+  /*
+   *@description     Handles the sign up function. It uses the state variables
+   *                 of username, password, and passwordConfirm, calculates
+   *                 the darkmode setting from the colorMode variable, and then
+   *                 sends a POST request to /api/user/signup
+   */
   const handleSignUp = async () => {
     setLoading(true);
 

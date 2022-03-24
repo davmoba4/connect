@@ -10,6 +10,10 @@ import {
 import { Avatar, Flex, Text, Tooltip, useColorMode } from "@chakra-ui/react";
 import { CheckIcon } from "@chakra-ui/icons";
 
+/*
+ *@description     The component that holds all of a particular chat's messages
+ *@props           messages: the messages to be displayed (list of Message)
+ */
 const Messages = ({ messages }) => {
   const { colorMode } = useColorMode();
   const { user } = ChatState();
@@ -68,7 +72,9 @@ const Messages = ({ messages }) => {
             {i === messages.length - 1 &&
               m.sender._id === user._id &&
               m.readBy.length === m.chat.users.length && (
-              <div style={{display: "flex", marginLeft: "auto" }}><CheckIcon mr="1"/> <Text fontSize="xs">READ</Text></div>
+                <div style={{ display: "flex", marginLeft: "auto" }}>
+                  <CheckIcon mr="1" /> <Text fontSize="xs">READ</Text>
+                </div>
               )}
           </Flex>
         ))}

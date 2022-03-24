@@ -74,10 +74,12 @@ const createGroup = asyncHandler(async (req, res) => {
   }
 });
 
-//@description     Checks whether a list of JSON objects contains a given object
-//@params          list: the list of objects (array of JSON objects)
-//                 user: the given object (JSON object)
-//@returns         Whether or not the list contains the object (Boolean)
+/*
+ *@description     Checks whether a list of JSON objects contains a given object
+ *@params          list: the list of objects (array of JSON objects)
+ *                 user: the given object (JSON object)
+ *@returns         Whether or not the list contains the object (Boolean)
+ */
 const contains = (list, user) => {
   return list.some((elem) => {
     return JSON.stringify(user) === JSON.stringify(elem);

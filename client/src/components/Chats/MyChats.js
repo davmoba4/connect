@@ -22,6 +22,9 @@ import ChatsLoading from "../Miscellaneous/ChatsLoading";
 import { getSenderUsername } from "../../config/ChatLogic";
 import { containsFull } from "../../config/ChatLogic";
 
+/*
+ *@description     The component that holds all the the cards for all of a users chats
+ */
 const MyChats = () => {
   const { colorMode } = useColorMode();
   const {
@@ -37,6 +40,10 @@ const MyChats = () => {
   const [loggedUser, setLoggedUser] = useState("");
   const toast = useToast();
 
+  /*
+   *@description     Fetches all of a user's chats by sending a GET
+   *                 request to /api/chat/fetch-all
+   */
   const fetchChats = async () => {
     try {
       const config = {
@@ -58,6 +65,13 @@ const MyChats = () => {
     }
   };
 
+  /*
+   *@description     Handles the clicking of a chat to set the selected chat
+   *                 to be that chat. Also, if the newest message for that
+   *                 chat was previously unread by the current user, it updates
+   *                 to read
+   *@params          chat: the chat that is being selected (Chat)
+   */
   const clickChat = async (chat) => {
     setSelectedChat(chat);
 
@@ -85,6 +99,11 @@ const MyChats = () => {
     }
   };
 
+  /*
+   *@description     Whenever there is a call to fetch messages again, they are fetched
+   *@dependency      fetchAgain: The state variable that updates whether fetching should
+   *                 happen again
+   */
   useEffect(() => {
     setLoggedUser(JSON.parse(localStorage.getItem("connect-user-data")));
     fetchChats();
@@ -140,7 +159,7 @@ const MyChats = () => {
         bg={colorMode === "dark" ? "#203239" : "#EEEBDD"}
       >
         {chats ? (
-          <Stack overflowY="scroll" style={{scrollbarWidth: "none"}}>
+          <Stack overflowY="scroll" style={{ scrollbarWidth: "none" }}>
             {chats.map((chat) => (
               <Box
                 key={chat._id}

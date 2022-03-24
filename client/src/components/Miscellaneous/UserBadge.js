@@ -2,6 +2,13 @@ import { CloseIcon } from "@chakra-ui/icons";
 import { Badge, Text } from "@chakra-ui/react";
 import { ChatState } from "../../context/ChatProvider";
 
+/*
+ *@description     The component that displays the badge of individual users in group modals
+ *@props           badgeUser: the user that the current badge represents (User)
+ *                 adminId: the ID of the admin for the group (Object ID)
+ *                 handleClickFunction: the function that is called when the username is clicked (function)
+ *                 handleCloseFunction: the function that is called when the close icon is clicked (function)
+ */
 const UserBadge = ({
   badgeUser,
   adminId,

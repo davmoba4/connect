@@ -5,6 +5,10 @@ import Navbar from "../Chats/Navbar";
 import MyChats from "../Chats/MyChats";
 import ChatBox from "../Chats/ChatBox";
 
+/*
+ *@description     The component that holds both the MyChats and Chatbox components
+ *                 (the main part of the chats page outside of the navbar)
+ */
 function ChatPage() {
   const { user } = ChatState();
 

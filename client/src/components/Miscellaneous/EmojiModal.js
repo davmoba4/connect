@@ -12,6 +12,11 @@ import {
   useDisclosure,
 } from "@chakra-ui/react";
 
+/*
+ *@description     The modal that displays all the emojis that can be added to a message
+ *@props           newMessage: the message that is being composed (Message)
+ *                 setNewMessage: the function that sets the newMessage (function)
+ */
 const EmojiModal = ({ newMessage, setNewMessage }) => {
   const { colorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -61,7 +66,7 @@ const EmojiModal = ({ newMessage, setNewMessage }) => {
             flexWrap="wrap"
             alignItems="center"
             overflowY="scroll"
-            style={{scrollbarWidth: "none"}}
+            style={{ scrollbarWidth: "none" }}
             justifyContent="space-between"
           >
             {codePoints.map((c) => (

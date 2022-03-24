@@ -21,6 +21,9 @@ import {
   names,
 } from "unique-names-generator";
 
+/*
+ *@description     The component that displays the log in functions
+ */
 const LogIn = () => {
   const { colorMode } = useColorMode();
   const toast = useToast();
@@ -32,16 +35,28 @@ const LogIn = () => {
   const [loadingLogIn, setLoadingLogIn] = useState(false);
   const [loadingGuest, setLoadingGuest] = useState(false);
 
+  /*
+   *@description     Toggles whether or not the password is visible in
+   *                 the password input
+   */
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
   };
 
+  /*
+   *@description     Calls the function that handles log in if the enter
+   *                 key was pressed
+   */
   const logInByEnter = (event) => {
     if (event.key === "Enter") {
       handleLogIn();
     }
   };
-
+  /*
+   *@description     Handles the log in function. It uses the state variables
+   *                 of username and password to send a POST request to
+   *                 /api/user/login
+   */
   const handleLogIn = async () => {
     setLoadingLogIn(true);
     if (!username || !password) {
@@ -91,6 +106,11 @@ const LogIn = () => {
     }
   };
 
+  /*
+   *@description     Uses the unique-names-generator library to
+   *                 generate a unique name consisting of an
+   *                 adjective an animal and a name
+   */
   const generateGuestUsername = () => {
     return uniqueNamesGenerator({
       dictionaries: [adjectives, animals, names],
@@ -99,6 +119,12 @@ const LogIn = () => {
     });
   };
 
+  /*
+   *@description     Generates a password consisting of random
+   *                 upper and lowecase letters, numbers, and
+   *                 special symbols
+   *@params          length: the length the password should be (int)
+   */
   const generateGuestPassword = (length) => {
     const CHARACTERS =
       "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%";
@@ -111,6 +137,11 @@ const LogIn = () => {
     return password;
   };
 
+  /*
+   *@description     Generates the url for a randomly chosen avatar
+   *                 that will be used as the profile picture for a
+   *                 guest account
+   */
   const generateGuestPicture = () => {
     const BASE_URL = "https://res.cloudinary.com/disclcylm/image/upload/";
     const URLS = [
@@ -127,6 +158,12 @@ const LogIn = () => {
     return `${BASE_URL}${URLS[Math.floor(Math.random() * URLS.length)]}`;
   };
 
+  /*
+   *@description     Handles the creation of a guest account. It uses
+   *                 the previous three functions to set up a username,
+   *                 password, and picture. Then it sends a POST request
+   *                 to /api/user/sign-up
+   */
   const handleGuest = async () => {
     setLoadingGuest(true);
 

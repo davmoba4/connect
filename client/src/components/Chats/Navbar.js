@@ -12,19 +12,27 @@ import {
   Tooltip,
   useColorMode,
 } from "@chakra-ui/react";
-import { BellIcon, ChevronDownIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
+import { ChevronDownIcon, MoonIcon, SunIcon } from "@chakra-ui/icons";
 import logo from "../../assets/logo.png";
 import { ChatState } from "../../context/ChatProvider";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ProfileModal from "../Miscellaneous/ProfileModal";
 
+/*
+ *@description     The component that holds the logo, option to toggle color mode, and user options
+ */
 const Navbar = () => {
   const { colorMode, toggleColorMode } = useColorMode();
   const navigate = useNavigate();
 
   const { user } = ChatState();
 
+  /*
+   *@description     Fetches the color mode from the database and updates
+   *                 the current color mode to match it. It sents a GET
+   *                 request to /api/setting
+   */
   const fetchColorMode = async () => {
     try {
       const config = {
@@ -44,10 +52,19 @@ const Navbar = () => {
     }
   };
 
+  /*
+   *@description     Fetches the color mode when the page is rendered
+   */
   useEffect(() => {
     fetchColorMode();
   }, []);
 
+  /*
+   *@description     It toggles the color mode and also does it for the
+   *                 setting in the database by sending a get request to
+   *                 /api/setting to get the id and then sends a PUT request
+   *                 to /api/setting to update the setting
+   */
   const hardToggleColorMode = async () => {
     toggleColorMode();
     try {
@@ -68,6 +85,11 @@ const Navbar = () => {
     }
   };
 
+  /*
+   *@description     Handles the log out function by removing the user data
+   *                 from local storage, navigating to the log in screen and
+   *                 reloading the page to clear the rest of the data
+   */
   const handleLogOut = () => {
     localStorage.removeItem("connect-user-data");
     navigate("/");

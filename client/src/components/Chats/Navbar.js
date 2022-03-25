@@ -9,16 +9,9 @@ import {
   MenuItem,
   MenuList,
   Text,
-  Tooltip,
   useColorMode,
 } from "@chakra-ui/react";
-import {
-  BellIcon,
-  CheckIcon,
-  ChevronDownIcon,
-  MoonIcon,
-  SunIcon,
-} from "@chakra-ui/icons";
+import { BellIcon, CheckIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import logo from "../../assets/logo.png";
 import { ChatState } from "../../context/ChatProvider";
 import { useNavigate } from "react-router-dom";
@@ -103,10 +96,10 @@ const Navbar = () => {
 
   /*
    *@description     Handles the click of a notification. Once clicked,
-   *                  the selected chat becomes that of the notification's
-   *                  and the notifications for that chat go away. Also,
-   *                  the newest message is marked as read.
-   *@params           notification: The individual notification (Message)
+   *                 the selected chat becomes that of the notification's
+   *                 and the notifications for that chat go away. Also,
+   *                 the newest message is marked as read
+   *@params          notification: The individual notification (Message)
    */
   const clickNotification = async (notification) => {
     setSelectedChat(notification.chat);

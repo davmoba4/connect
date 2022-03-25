@@ -36,6 +36,8 @@ const MyChats = () => {
     fetchAgain,
     setFetchAgain,
     theSocket,
+    notifications,
+    setNotifications,
   } = ChatState();
   const [loggedUser, setLoggedUser] = useState("");
   const toast = useToast();
@@ -93,6 +95,9 @@ const MyChats = () => {
         );
         setFetchAgain(!fetchAgain);
         theSocket.emit("self read message", chat._id);
+        setNotifications(
+          notifications.filter((notif) => notif.chat._id !== chat._id)
+        );
       } catch (error) {
         return;
       }

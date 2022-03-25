@@ -9,10 +9,11 @@ const ChatContext = createContext();
  */
 const ChatProvider = ({ children }) => {
   const [user, setUser] = useState();
-  const [chats, setChats] = useState();
+  const [chats, setChats] = useState([]);
   const [selectedChat, setSelectedChat] = useState();
   const [fetchAgain, setFetchAgain] = useState(false);
   const [theSocket, setTheSocket] = useState();
+  const [notifications, setNotifications] = useState([]);
 
   const navigate = useNavigate();
 
@@ -44,6 +45,8 @@ const ChatProvider = ({ children }) => {
         setFetchAgain,
         theSocket,
         setTheSocket,
+        notifications,
+        setNotifications,
       }}
     >
       {children}

@@ -39,6 +39,8 @@ const ChatBox = () => {
     fetchAgain,
     setFetchAgain,
     setTheSocket,
+    notifications,
+    setNotifications,
   } = ChatState();
 
   const [loading, setLoading] = useState(false);
@@ -280,6 +282,12 @@ const ChatBox = () => {
         selectedChatCompare._id !== newMessageReceived.chat._id
       ) {
         setFetchAgain((fetchAgain) => !fetchAgain);
+        setNotifications((notifications) => [
+          newMessageReceived,
+          ...notifications.filter(
+            (notif) => notif.chat._id !== newMessageReceived.chat._id
+          ),
+        ]);
       } else {
         setMessages((messages) => [...messages, newMessageReceived]);
         readMessage(newMessageReceived);

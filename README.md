@@ -11,11 +11,11 @@ A real-time chat application.
 ``` 
 npm install
 ```
-- Create a .env file inside your **server** folder and store the following variables inside:
- PORT = <port number for your server (e.g. 5000)> \
- CORS_URL = <your frontend's URL (e.g. http://localhost:3000)> \
- MONGO_URI = <the URI connecting to your MongoDB database> \
- JWT_SECRET = <the secret string used to create and verify your tokens (can be anything)> \
+- Create a .env file inside your **server** folder and store the following variables inside:  
+ PORT = <port number for your server (e.g. 5000)>  
+ CORS_URL = <your frontend's URL (e.g. http://localhost:3000)>  
+ MONGO_URI = <the URI connecting to your MongoDB database>  
+ JWT_SECRET = <the secret string used to create and verify your tokens (can be anything)>  
 - Navigate to the **server** folder on the terminal and run the following command to start the backend:
 ```
 npm start

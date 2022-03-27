@@ -26,7 +26,7 @@ npm start
 ``` 
 npm install
 ```
-- Navigate to client/src/components/Chats/ChatBox.js. Then, on line 261, change the ENDPOINT variable to your server's URL.
+- Navigate to client/src/components/Chats/ChatBox.js. Then, on line 26, change the ENDPOINT variable to your server's URL.
 - Navigate to client/package.json and change the "proxy" value to your server's URL.
 - Navigate to the **client** folder on the terminal and run the following command to start the frontend:
 ```

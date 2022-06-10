@@ -3,7 +3,6 @@ A real-time chat application.
 
 # Demo the App
 - Follow the following link to try out the app: https://davmoba4-connect.netlify.app/
-- The app works best on a Google Chrome browser.
 
 # How to Run Locally
 ### Backend
